@@ -6,6 +6,7 @@ interface UserInterface {
 	username: string;
 	email: string;
 	password: string;
+	userType: string;
 	comparePassword(candidatePassword: string): Promise<boolean>;
 	generateToken(): string;
 }
@@ -23,6 +24,11 @@ const userSchema = new Schema<UserInterface>({
 	password: {
 		type: String,
 		required: true,
+	},
+	userType: {
+		type: String,
+		required: true,
+		default: 'customer',
 	},
 });
 
