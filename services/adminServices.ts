@@ -4,20 +4,31 @@ import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-interface createAdminInput {
+interface createAdminInterface {
 	username: string;
 	email: string;
 	password: string;
 }
-interface loginAdminInput {
+interface loginAdminInterface {
 	email: string;
 	password: string;
 }
-interface forgotPassInput {
+interface forgotPassInterface {
 	email: string;
 }
+interface verifyForgotPassTokenInterface {
+	token: string;
+}
+interface VerifyTokenResult {
+	success: boolean;
+	message: string;
+}
 
-const createAdmin = async ({ username, email, password }: createAdminInput) => {
+const createAdmin = async ({
+	username,
+	email,
+	password,
+}: createAdminInterface) => {
 	try {
 		// Check if admin with the given email already exists
 		const existingAdmin = await AdminModal.findOne({ email });
@@ -42,7 +53,7 @@ const createAdmin = async ({ username, email, password }: createAdminInput) => {
 	}
 };
 
-const loginAdmin = async ({ email, password }: loginAdminInput) => {
+const loginAdmin = async ({ email, password }: loginAdminInterface) => {
 	try {
 		const admin = await AdminModal.findOne({ email });
 
@@ -66,7 +77,7 @@ const loginAdmin = async ({ email, password }: loginAdminInput) => {
 		return { success: false, message: 'Internal server error' };
 	}
 };
-const forgotPass = async ({ email }: forgotPassInput) => {
+const forgotPass = async ({ email }: forgotPassInterface) => {
 	try {
 		// Generate a reset token
 		const resetToken = await generateResetToken({ email });
@@ -79,14 +90,14 @@ const forgotPass = async ({ email }: forgotPassInput) => {
 		const transporter = nodemailer.createTransport({
 			service: 'gmail',
 			auth: {
-				user: 'sadiqmuhammad795@gmail.com',
-				pass: 'xojgxerfrcgzuvkb',
+				user: 'mabbask440@gmail.com',
+				pass: `${process.env.APP_PASSWORD}`,
 			},
 		});
 
 		// Compose the email
 		const mailOptions = {
-			from: 'sadiqmuhammad795@gmail.com',
+			from: `${process.env.FROM}`,
 			to: email,
 			subject: 'Password Reset',
 			text: `Click the following link to reset your password: http://localhost:4000/reset-password/${resetToken}`,
@@ -104,4 +115,18 @@ const forgotPass = async ({ email }: forgotPassInput) => {
 	}
 };
 
-export { createAdmin, loginAdmin, forgotPass };
+const verifyForgotPassToken = ({
+	token,
+}: verifyForgotPassTokenInterface): Promise<VerifyTokenResult> => {
+	return new Promise((resolve, reject) => {
+		jwt.verify(token, `${process.env.SECRETKEY}`, (err) => {
+			if (err) {
+				reject({ success: false, message: 'Invalid or expired token' });
+			} else {
+				resolve({ success: true, message: 'Token verified successfully' });
+			}
+		});
+	});
+};
+
+export { createAdmin, loginAdmin, forgotPass, verifyForgotPassToken };

@@ -12,7 +12,7 @@ const generateResetToken = ({ email }: ResetTokenInput): string => {
 			email: email,
 			// You can add additional information here if needed
 		},
-		secretKey,
+		`${process.env.SECRETKEY}`,
 		{ expiresIn: '1h' } // Set the reset token expiration time as needed
 	);
 

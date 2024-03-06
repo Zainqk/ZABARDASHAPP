@@ -3,7 +3,7 @@ import {
 	register,
 	login,
 	forgotPassword,
-	resetPassword,
+	tokenVerification,
 	getSingleAdmin,
 	getAllAdmins,
 	updateAdmin,
@@ -15,7 +15,7 @@ import authenticateAdmin from '../middleware/authenticateAdmin';
 router.post('/login', login);
 router.post('/register', register);
 router.post('/forgotPassword', forgotPassword);
-router.post('/resetPassword/:token', resetPassword);
+router.post('/tokenVerification/:token', tokenVerification);
 router.get('/getAllAdmins', getAllAdmins);
 router.get('/getSingleAdmin/:id', getSingleAdmin);
 

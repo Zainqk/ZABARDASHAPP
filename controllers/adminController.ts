@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import Admin, { AdminInterface } from '../models/adminModel';
-import { createAdmin, loginAdmin, forgotPass } from '../services/adminServices';
+import {
+	createAdmin,
+	loginAdmin,
+	forgotPass,
+	verifyForgotPassToken,
+} from '../services/adminServices';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
@@ -107,36 +112,26 @@ const forgotPassword = async (req: Request, res: Response) => {
 };
 
 // Reset Password (Verify token)
-const resetPassword = async (req: Request, res: Response) => {
+const tokenVerification = async (req: Request, res: Response) => {
 	const { token } = req.params;
-	const { newPassword, email } = req.body;
-
 	try {
-		jwt.verify(token, 'sadiqkhangmuhammadsadiq', async (err) => {
-			if (err) {
-				return res.status(401).json({
-					success: false,
-					message: 'Invalid or expired token',
-				});
-			}
-
-			const user = await Admin.findOne({ email });
-
-			if (!user) {
-				return res.status(404).json({
-					success: false,
-					message: 'Admin not found',
-				});
-			}
-
-			user.password = newPassword;
-			await user.save();
-
-			res.status(200).json({
-				success: true,
-				message: 'Password reset successful',
-			});
+		const result = await verifyForgotPassToken({
+			token,
 		});
+
+		if (result) {
+			if (result.success) {
+				res.status(200).json(result);
+			} else {
+				res.status(500).json(result);
+			}
+		} else {
+			// Handle case where result is undefined
+			res.status(500).json({
+				success: false,
+				message: 'Error occurred while verifying token',
+			});
+		}
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -210,7 +205,7 @@ export {
 	register,
 	login,
 	forgotPassword,
-	resetPassword,
+	tokenVerification,
 	getSingleAdmin,
 	getAllAdmins,
 	updateAdmin,
