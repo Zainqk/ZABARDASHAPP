@@ -19,5 +19,6 @@
 //         });
 //     }
 // };
+// role would be added here
 
 // export default isAdmin;

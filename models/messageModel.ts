@@ -9,7 +9,7 @@ interface MessageInterface extends Document {
 	createdAt: Date;
 	updatedAt: Date;
 }
-
+// message model body
 const messageSchema = new Schema<MessageInterface>(
 	{
 		customer_id: {
