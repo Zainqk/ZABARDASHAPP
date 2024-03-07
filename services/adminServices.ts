@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import NodeCache from 'node-cache';
 
+const tempStorage = new NodeCache();
+
 interface createAdminInterface {
 	username: string;
 	email: string;
@@ -29,6 +31,12 @@ interface resetPassInterface {
 	email: string;
 	password: string;
 }
+interface emailVerifInterface {
+	token: string;
+}
+interface registerAdminInterface {
+	uuid: string;
+}
 
 const createAdmin = async ({
 	username,
@@ -46,19 +54,89 @@ const createAdmin = async ({
 			};
 		}
 
-		const newAdmin = await AdminModal.create({
-			username,
-			email,
-			password,
+		// Generate a reset token
+		const resetToken = await generateResetToken({ email });
+		// Create a transporter for sending emails
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'mabbask440@gmail.com',
+				pass: `${process.env.APP_PASSWORD}`,
+			},
 		});
 
-		return { success: true, admin: newAdmin };
+		// Compose the email
+		const mailOptions = {
+			from: `${process.env.FROM}`,
+			to: email,
+			subject: 'Email Verification',
+			text: `Click the following link to reset your password: http://localhost:4000/verifcation/${resetToken}`,
+		};
+
+		// Send the email
+		const info = await transporter.sendMail(mailOptions);
+
+		console.log('Email sent: ' + info.response);
+
+		// Generate a unique identifier for the user
+		const userId = uuidv4();
+		// Store the user information in temporary storage with userId as key
+		tempStorage.set(userId, { username, email, password });
+
+		return {
+			success: true,
+			userId,
+			message: 'Check your Gmail for email verification',
+		};
 	} catch (error) {
 		console.error(error);
 		return {
 			success: false,
 			message: 'Admin registration internal server error',
 		};
+	}
+};
+
+const emailVerif = ({
+	token,
+}: emailVerifInterface): Promise<VerifyTokenResult> => {
+	return new Promise((resolve, reject) => {
+		jwt.verify(token, `${process.env.SECRETKEY}`, (err) => {
+			if (err) {
+				reject({ success: false });
+			} else {
+				resolve({ success: true, message: 'Email verified' });
+			}
+		});
+	});
+};
+
+const registerAdmin = async ({ uuid }: registerAdminInterface) => {
+	try {
+		// Retrieve user information from temporary storage using userId
+		const userData = tempStorage.get(uuid) as {
+			username: string;
+			email: string;
+			password: string;
+		};
+
+		console.log('It give me this the Userdata:', userData);
+
+		if (!userData) {
+			return { success: false, message: 'User information not found' };
+		}
+		const newAdmin = await AdminModal.create({
+			username: userData.username,
+			email: userData.email,
+			password: userData.password,
+		});
+
+		tempStorage.del(uuid);
+
+		return { success: true, message: 'Admin Register successfully' };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Login internal server error' };
 	}
 };
 
@@ -162,4 +240,6 @@ export {
 	forgotPass,
 	verifyForgotPassToken,
 	resetPass,
+	emailVerif,
+	registerAdmin,
 };

@@ -6,6 +6,8 @@ import {
 	forgotPass,
 	verifyForgotPassToken,
 	resetPass,
+	emailVerif,
+	registerAdmin,
 } from '../services/adminServices';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
@@ -25,6 +27,32 @@ const register = async (req: Request, res: Response) => {
 
 		if (result.success) {
 			res.status(200).json(result);
+		} else {
+			res.status(500).json(result);
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const emailVerification = async (req: Request, res: Response) => {
+	const { uuid, token } = req.body;
+
+	try {
+		const result = await emailVerif({
+			token,
+		});
+		if (result.success) {
+			const response = await registerAdmin({ uuid });
+			if (response.success) {
+				res.status(200).json(response);
+			} else {
+				res.status(500).json(response);
+			}
 		} else {
 			res.status(500).json(result);
 		}
@@ -233,4 +261,5 @@ export {
 	updateAdmin,
 	deleteAdmin,
 	resetPassword,
+	emailVerification,
 };
