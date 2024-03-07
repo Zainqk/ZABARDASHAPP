@@ -3,6 +3,8 @@ import generateToken from '../utils/generateToken';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
+import NodeCache from 'node-cache';
 
 interface createAdminInterface {
 	username: string;
