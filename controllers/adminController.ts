@@ -5,6 +5,7 @@ import {
 	loginAdmin,
 	forgotPass,
 	verifyForgotPassToken,
+	resetPass,
 } from '../services/adminServices';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
@@ -111,7 +112,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 	}
 };
 
-// Reset Password (Verify token)
+// Verify token
 const tokenVerification = async (req: Request, res: Response) => {
 	const { token } = req.params;
 	try {
@@ -131,6 +132,27 @@ const tokenVerification = async (req: Request, res: Response) => {
 				success: false,
 				message: 'Error occurred while verifying token',
 			});
+		}
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+// reset password
+const resetPassword = async (req: Request, res: Response) => {
+	const { email, password } = req.body;
+	try {
+		const result = await resetPass({
+			email,
+			password,
+		});
+		if (result.success) {
+			res.status(200).json(result);
+		} else {
+			res.status(500).json(result);
 		}
 	} catch (error) {
 		res.status(500).json({
@@ -210,4 +232,5 @@ export {
 	getAllAdmins,
 	updateAdmin,
 	deleteAdmin,
+	resetPassword,
 };

@@ -8,6 +8,7 @@ import {
 	getAllAdmins,
 	updateAdmin,
 	deleteAdmin,
+	resetPassword,
 } from '../controllers/adminController';
 const router = express.Router();
 import authenticateAdmin from '../middleware/authenticateAdmin';
@@ -16,6 +17,7 @@ router.post('/login', login);
 router.post('/register', register);
 router.post('/forgotPassword', forgotPassword);
 router.post('/tokenVerification/:token', tokenVerification);
+router.post('/resetPassword', resetPassword);
 router.get('/getAllAdmins', getAllAdmins);
 router.get('/getSingleAdmin/:id', getSingleAdmin);
 

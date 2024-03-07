@@ -23,6 +23,10 @@ interface VerifyTokenResult {
 	success: boolean;
 	message: string;
 }
+interface resetPassInterface {
+	email: string;
+	password: string;
+}
 
 const createAdmin = async ({
 	username,
@@ -49,7 +53,10 @@ const createAdmin = async ({
 		return { success: true, admin: newAdmin };
 	} catch (error) {
 		console.error(error);
-		return { success: false, message: 'Internal server error' };
+		return {
+			success: false,
+			message: 'Admin registration internal server error',
+		};
 	}
 };
 
@@ -74,7 +81,7 @@ const loginAdmin = async ({ email, password }: loginAdminInterface) => {
 		return { success: true, admin: { email: admin.email, token } };
 	} catch (error) {
 		console.error(error);
-		return { success: false, message: 'Internal server error' };
+		return { success: false, message: 'Login internal server error' };
 	}
 };
 const forgotPass = async ({ email }: forgotPassInterface) => {
@@ -111,7 +118,7 @@ const forgotPass = async ({ email }: forgotPassInterface) => {
 		return { success: true, message: 'Reset link sent to your email' };
 	} catch (error) {
 		console.error(error);
-		return { success: false, message: 'Internal server error' };
+		return { success: false, message: 'Forgot pass internal server error' };
 	}
 };
 
@@ -129,4 +136,28 @@ const verifyForgotPassToken = ({
 	});
 };
 
-export { createAdmin, loginAdmin, forgotPass, verifyForgotPassToken };
+const resetPass = async ({ email, password }: resetPassInterface) => {
+	try {
+		const adminUser = await AdminModal.findOne({ email });
+
+		if (!adminUser) {
+			return { success: false, message: 'Admin not found' };
+		}
+
+		adminUser.password = password;
+		await adminUser.save();
+
+		return { success: true, message: 'Password reset successfully' };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Reset pass internal server error' };
+	}
+};
+
+export {
+	createAdmin,
+	loginAdmin,
+	forgotPass,
+	verifyForgotPassToken,
+	resetPass,
+};
