@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import userRoutes from './routes/adminRoutes';
+import routes from './routes/index';
 import connectDb from './db';
 
 const app = express();
@@ -11,7 +11,7 @@ connectDb();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/', userRoutes);
+app.use('/', routes);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
