@@ -42,7 +42,9 @@ interface registerAdminInterface {
 interface getAdminByIdInterface {
 	id: string;
 }
-
+interface deleteAdminInterface {
+	id: string;
+}
 const createAdmin = async ({
 	username,
 	email,
@@ -272,7 +274,10 @@ const resetPass = async ({ email, password }: resetPassInterface) => {
 		return { success: false, message: 'Reset pass internal server error' };
 	}
 };
-
+interface updateAdminInterface {
+	id: string;
+	updateData: any;
+}
 const getAllAdmin = async () => {
 	try {
 		// Retrieve all admins from the database
@@ -296,6 +301,50 @@ const getAdminById = async ({ id }: getAdminByIdInterface) => {
 	}
 };
 
+const updateAdmins = async ({ id, updateData }: updateAdminInterface) => {
+	try {
+		const { email } = updateData;
+
+		// Check if the new email already exists in the database
+		const existingAdmin = await AdminModal.findOne({ email });
+
+		if (existingAdmin && existingAdmin._id.toString() !== id) {
+			return {
+				success: false,
+				message: 'Admin already exists with this email',
+			};
+		}
+		// Find the admin by ID and update its data
+		const updatedAdmin = await AdminModal.findByIdAndUpdate(id, updateData, {
+			new: true,
+		});
+
+		if (!updatedAdmin) {
+			return { success: false, message: 'Admin not found' };
+		}
+
+		return { success: true, admin: updatedAdmin };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Internal server error' };
+	}
+};
+const deleteAdmins = async ({ id }: deleteAdminInterface) => {
+	try {
+		// Find the admin by ID and delete it
+		const deletedAdmin = await AdminModal.findByIdAndDelete(id);
+
+		if (!deletedAdmin) {
+			return { success: false, message: 'Admin not found' };
+		}
+
+		return { success: true, message: 'Admin deleted successfully' };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Internal server error' };
+	}
+};
+
 export {
 	createAdmin,
 	loginAdmin,
@@ -306,4 +355,6 @@ export {
 	registerAdmin,
 	getAllAdmin,
 	getAdminById,
+	updateAdmins,
+	deleteAdmins,
 };

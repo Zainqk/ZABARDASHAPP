@@ -10,6 +10,8 @@ import {
 	registerAdmin,
 	getAllAdmin,
 	getAdminById,
+	updateAdmins,
+	deleteAdmins,
 } from '../services/adminServices';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
@@ -220,19 +222,19 @@ const getSingleAdmin = async (req: Request, res: Response) => {
 const updateAdmin = async (req: Request, res: Response) => {
 	try {
 		const updateData = req.body;
-		const records = await Admin.findByIdAndUpdate(req.params.id, updateData, {
-			new: true,
-		});
 
-		if (!records) {
-			res.status(404).json({
-				success: false,
-				message: 'Record not found',
-			});
-		} else {
+		const result = await updateAdmins({ id: req.params.id, updateData });
+
+		if (result.success) {
 			res.status(200).json({
 				success: true,
+				Admin: result.admin,
 				message: 'Admin updated successfully',
+			});
+		} else {
+			res.status(500).json({
+				success: false,
+				message: result.message,
 			});
 		}
 	} catch (err) {
@@ -243,20 +245,25 @@ const updateAdmin = async (req: Request, res: Response) => {
 // deleteAdmin
 const deleteAdmin = async (req: Request, res: Response) => {
 	try {
-		const records = await Admin.findByIdAndDelete(req.params.id);
-		if (!records) {
-			res.status(404).json({
+		const result = await deleteAdmins({ id: req.params.id });
+
+		if (!result.success) {
+			return res.status(404).json({
 				success: false,
-				message: 'Record not found',
-			});
-		} else {
-			res.status(200).json({
-				success: true,
-				message: 'Admin deleted successfully',
+				message: result.message,
 			});
 		}
-	} catch (err) {
-		res.status(500).send(err);
+
+		res.status(200).json({
+			success: true,
+			message: result.message,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
 	}
 };
 
