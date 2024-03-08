@@ -39,6 +39,9 @@ interface emailVerifInterface {
 interface registerAdminInterface {
 	userId: string;
 }
+interface getAdminByIdInterface {
+	id: string;
+}
 
 const createAdmin = async ({
 	username,
@@ -270,6 +273,29 @@ const resetPass = async ({ email, password }: resetPassInterface) => {
 	}
 };
 
+const getAllAdmin = async () => {
+	try {
+		// Retrieve all admins from the database
+		const admins = await AdminModal.find({}, { password: 0 });
+
+		return { success: true, admins };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Internal server error' };
+	}
+};
+const getAdminById = async ({ id }: getAdminByIdInterface) => {
+	try {
+		// Retrieve all admins from the database
+		const admins = await AdminModal.findById(id, { password: 0 });
+
+		return { success: true, admins };
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Internal server error' };
+	}
+};
+
 export {
 	createAdmin,
 	loginAdmin,
@@ -278,4 +304,6 @@ export {
 	resetPass,
 	emailVerif,
 	registerAdmin,
+	getAllAdmin,
+	getAdminById,
 };

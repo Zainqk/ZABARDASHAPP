@@ -8,6 +8,8 @@ import {
 	resetPass,
 	emailVerif,
 	registerAdmin,
+	getAllAdmin,
+	getAdminById,
 } from '../services/adminServices';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
@@ -82,32 +84,6 @@ const login = async (req: Request, res: Response) => {
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });
-	}
-};
-
-// getSingleAdmin
-const getSingleAdmin = async (req: Request, res: Response) => {
-	const { id } = req.params;
-
-	try {
-		const user = await Admin.findById(id);
-
-		if (!user) {
-			return res.status(404).json({
-				success: false,
-				message: 'Admin not found',
-			});
-		}
-
-		res.status(200).json({
-			success: true,
-			user,
-		});
-	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Internal server error',
-		});
 	}
 };
 
@@ -193,12 +169,45 @@ const resetPassword = async (req: Request, res: Response) => {
 //getAllAdmins
 const getAllAdmins = async (req: Request, res: Response) => {
 	try {
-		const users = await Admin.find();
+		const result = await getAllAdmin();
 
-		res.status(200).json({
-			success: true,
-			users,
+		if (result.success) {
+			res.status(200).json({
+				success: true,
+				Admin: result.admins,
+			});
+		} else {
+			res.status(500).json({
+				success: false,
+				message: result.message,
+			});
+		}
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
 		});
+	}
+};
+
+// getSingleAdmin
+const getSingleAdmin = async (req: Request, res: Response) => {
+	const { id } = req.params;
+
+	try {
+		const result = await getAdminById({ id });
+
+		if (result.success) {
+			res.status(200).json({
+				success: true,
+				Admin: result.admins,
+			});
+		} else {
+			res.status(500).json({
+				success: false,
+				message: result.message,
+			});
+		}
 	} catch (error) {
 		res.status(500).json({
 			success: false,
