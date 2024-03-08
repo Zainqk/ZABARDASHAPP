@@ -5,7 +5,9 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import NodeCache from 'node-cache';
-
+const fs = require('fs');
+const path = require('path');
+const configFilePath = path.join(__dirname, '../config/config.json');
 const tempStorage = new NodeCache();
 
 interface createAdminInterface {
@@ -35,7 +37,7 @@ interface emailVerifInterface {
 	token: string;
 }
 interface registerAdminInterface {
-	uuid: string;
+	userId: string;
 }
 
 const createAdmin = async ({
@@ -80,8 +82,23 @@ const createAdmin = async ({
 
 		// Generate a unique identifier for the user
 		const userId = uuidv4();
-		// Store the user information in temporary storage with userId as key
-		tempStorage.set(userId, { username, email, password });
+
+		// Read existing data from config.json or initialize an empty array
+		let userDataArray = [];
+		if (fs.existsSync(configFilePath)) {
+			const configData = fs.readFileSync(configFilePath);
+			// Check if configData is not empty
+			console.log('The user data is: ', configData);
+			if (configData) {
+				userDataArray = JSON.parse(configData);
+			}
+		}
+
+		// Add user information to the array
+		userDataArray.push({ userId, username, email, password });
+
+		// Write the updated user information back to config.json
+		fs.writeFileSync(configFilePath, JSON.stringify(userDataArray, null, 2));
 
 		return {
 			success: true,
@@ -111,29 +128,48 @@ const emailVerif = ({
 	});
 };
 
-const registerAdmin = async ({ uuid }: registerAdminInterface) => {
+const registerAdmin = async ({ userId }: registerAdminInterface) => {
 	try {
-		// Retrieve user information from temporary storage using userId
-		const userData = tempStorage.get(uuid) as {
-			username: string;
-			email: string;
-			password: string;
-		};
+		// Read user data from config.json
+		const configData = fs.readFileSync(configFilePath);
+		const userDataArray = JSON.parse(configData);
 
-		console.log('It give me this the Userdata:', userData);
+		// Find user information by userId
+		const userData = userDataArray.find((user: any) => user.userId === userId);
 
 		if (!userData) {
-			return { success: false, message: 'User information not found' };
+			return { success: false, message: 'Invalid data in config.json' };
 		}
-		const newAdmin = await AdminModal.create({
+		// console.log('The admin registration data in the config.json:', userData);
+
+		const existingAdmin = await AdminModal.findOne({ email: userData.email });
+
+		if (existingAdmin) {
+			return {
+				success: false,
+				message: 'Admin already register',
+			};
+		}
+
+		const registerAdmin = await AdminModal.create({
 			username: userData.username,
 			email: userData.email,
 			password: userData.password,
 		});
 
-		tempStorage.del(uuid);
+		// Remove the registered admin from adminDataArray
+		let adminDataArray = userDataArray.filter(
+			(user: any) => user.userId !== userId
+		);
 
-		return { success: true, message: 'Admin Register successfully' };
+		// Write the updated adminDataArray back to config.json
+		fs.writeFileSync(configFilePath, JSON.stringify(adminDataArray, null, 2));
+
+		return {
+			success: true,
+			message: 'Admin Register successfully',
+			registerAdmin,
+		};
 	} catch (error) {
 		console.error(error);
 		return { success: false, message: 'Login internal server error' };

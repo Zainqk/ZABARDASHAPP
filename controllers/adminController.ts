@@ -40,14 +40,14 @@ const register = async (req: Request, res: Response) => {
 };
 
 const emailVerification = async (req: Request, res: Response) => {
-	const { uuid, token } = req.body;
+	const { userId, token } = req.body;
 
 	try {
 		const result = await emailVerif({
 			token,
 		});
 		if (result.success) {
-			const response = await registerAdmin({ uuid });
+			const response = await registerAdmin({ userId });
 			if (response.success) {
 				res.status(200).json(response);
 			} else {
