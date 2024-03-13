@@ -24,7 +24,7 @@ const productSchema = new Schema<ProductInterface>(
 		},
 		user_id: {
 			type: Schema.Types.ObjectId,
-			ref: 'User', // Ensure 'User' is the correct model name
+			ref: 'User', // Ensure 'User' is the correct model names
 			required: true,
 		},
 		description: {
