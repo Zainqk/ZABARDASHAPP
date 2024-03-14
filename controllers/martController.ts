@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
 import Mart, { MartInterface } from '../models/martModel';
-import generateResetToken from '../utils/generateResetToken';
-import nodemailer from 'nodemailer';
-import jwt from 'jsonwebtoken';
-import generateToken from '../utils/generateToken';
-
+import path from 'path';
 //addMart
 const addMart = async (req: Request, res: Response) => {
 	try {
@@ -43,10 +39,10 @@ const uploadPic = async (req: Request, res: Response) => {
 				.json({ success: false, message: 'No image uploaded' });
 		}
 
-		// Get the file path
-		const imgPath = req.file.path;
+		// Get the file name
+		const imgName = path.basename(req.file.path);
 
-		res.status(200).json({ success: true, imagePath: imgPath });
+		res.status(200).json({ success: true, imagePath: imgName });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });

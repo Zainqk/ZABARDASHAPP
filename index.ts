@@ -11,10 +11,7 @@ connectDb();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(
-	'/upload/images',
-	express.static(path.join(__dirname, 'upload/images'))
-);
+app.use('/images', express.static(path.join(__dirname, 'upload/images')));
 app.use('/', routes);
 
 app.listen(PORT, () => {
