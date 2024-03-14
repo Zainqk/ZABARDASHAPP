@@ -3,18 +3,21 @@ import mongoose, { Model, Schema } from 'mongoose';
 // Define the interface for the Order
 interface OrderInterface {
 	customerID: mongoose.Types.ObjectId;
-	date: Date;
-	time: string;
 	status: string;
 	paymentStatus: string;
 	paymentMethod: string;
 	shippingAddress: string;
-	totalAmount: number;
+	subtotal: number;
 	discounts: number;
-	items_id: mongoose.Types.ObjectId[];
+	product: {
+		product_id: mongoose.Types.ObjectId;
+		variant_title: string;
+	}[];
 	taxAmount: number;
 	shippingFee: number;
-	totalPayment: number;
+	totalAmount: number;
+	specialInstruction: string;
+	cancellation_reason: string;
 }
 
 // Define the schema for the Order
@@ -23,14 +26,6 @@ const orderSchema = new Schema<OrderInterface>(
 		customerID: {
 			type: Schema.Types.ObjectId,
 			ref: 'User', // Reference to the User model
-			required: true,
-		},
-		date: {
-			type: Date,
-			required: true,
-		},
-		time: {
-			type: String,
 			required: true,
 		},
 		status: {
@@ -49,7 +44,7 @@ const orderSchema = new Schema<OrderInterface>(
 			type: String,
 			required: true,
 		},
-		totalAmount: {
+		subtotal: {
 			type: Number,
 			required: true,
 		},
@@ -57,23 +52,33 @@ const orderSchema = new Schema<OrderInterface>(
 			type: Number,
 			required: true,
 		},
-		items_id: [
+		product: [
 			{
-				type: Schema.Types.ObjectId,
-				ref: 'Product', // Reference to the Product model
-				required: true,
+				product_id: {
+					type: Schema.Types.ObjectId,
+					ref: 'Product', // Reference to the Product model
+					required: true,
+				},
+				variant_title: {
+					type: String,
+					required: true,
+				},
 			},
 		],
 		taxAmount: {
 			type: Number,
 			required: true,
 		},
-		shippingFee: {
+		totalAmount: {
 			type: Number,
 			required: true,
 		},
-		totalPayment: {
-			type: Number,
+		specialInstruction: {
+			type: String,
+			required: true,
+		},
+		cancellation_reason: {
+			type: String,
 			required: true,
 		},
 	},

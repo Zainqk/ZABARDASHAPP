@@ -8,7 +8,12 @@ interface ProductInterface {
 	price: number;
 	stockQuantity: number;
 	images: string[];
-	availability: boolean;
+	status: string;
+	subtitle: string;
+	variation: {
+		title: string;
+		price: number;
+	}[];
 }
 
 const productSchema = new Schema<ProductInterface>(
@@ -43,10 +48,26 @@ const productSchema = new Schema<ProductInterface>(
 			type: [String],
 			required: true,
 		},
-		availability: {
-			type: Boolean,
+		status: {
+			type: String,
 			required: true,
 		},
+		subtitle: {
+			type: String,
+			required: true,
+		},
+		variation: [
+			{
+				title: {
+					type: String,
+					required: true,
+				},
+				price: {
+					type: Number,
+					required: true,
+				},
+			},
+		],
 	},
 	{ timestamps: true }
 );

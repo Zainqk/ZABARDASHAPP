@@ -7,6 +7,7 @@ interface UserInterface {
 	email: string;
 	password: string;
 	userType: string;
+	address: string;
 	comparePassword(candidatePassword: string): Promise<boolean>;
 	generateToken(): string;
 }
@@ -29,6 +30,9 @@ const userSchema = new Schema<UserInterface>({
 		type: String,
 		required: true,
 		default: 'customer',
+	},
+	address: {
+		type: String,
 	},
 });
 

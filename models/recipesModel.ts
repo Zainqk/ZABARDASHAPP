@@ -3,13 +3,10 @@ import mongoose, { Schema, Document } from 'mongoose';
 // Define the interface for the recipe document
 interface RecipeInterface extends Document {
 	name: string;
-	category_id: mongoose.Types.ObjectId;
-	description: string;
-	ingredients: string[];
-	instructions: string;
-	images: string[];
-	reviews: string[];
-	rating: number;
+	prep_time: number;
+	cook_time: number;
+	status: string;
+	img: string;
 }
 
 // Define the schema for the recipe
@@ -19,34 +16,21 @@ const recipeSchema: Schema<RecipeInterface> = new Schema(
 			type: String,
 			required: true,
 		},
-		category_id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Category', // Assuming you have a Category schema defined
-			required: true,
-		},
-		description: {
-			type: String,
-			required: true,
-		},
-		ingredients: {
-			type: [String],
-			required: true,
-		},
-		instructions: {
-			type: String,
-			required: true,
-		},
-		images: {
-			type: [String],
-			required: true,
-		},
-		reviews: {
-			type: [String],
-			default: [],
-		},
-		rating: {
+		prep_time: {
 			type: Number,
-			default: 0,
+			required: true,
+		},
+		cook_time: {
+			type: Number,
+			required: true,
+		},
+		status: {
+			type: String,
+			required: true,
+		},
+		img: {
+			type: String,
+			required: true,
 		},
 	},
 	{ timestamps: true }

@@ -2,10 +2,13 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 interface IngredientInterface {
 	name: string;
-	description: string;
-	category_id: mongoose.Types.ObjectId;
-	quantityInStock: number;
-	dateAdded: Date;
+	price: number;
+	ingredient_qty_adding: number;
+	instructions: string[];
+	per_unit_price: number;
+	size_per_unit: string;
+	recipe_id: mongoose.Types.ObjectId;
+	mart_id: mongoose.Types.ObjectId;
 }
 
 const ingredientSchema = new Schema<IngredientInterface>({
@@ -13,22 +16,35 @@ const ingredientSchema = new Schema<IngredientInterface>({
 		type: String,
 		required: true,
 	},
-	description: {
-		type: String,
-		required: true,
-	},
-	category_id: {
-		type: Schema.Types.ObjectId,
-		ref: 'Category', // Assuming you have a Category model
-		required: true,
-	},
-	quantityInStock: {
+	price: {
 		type: Number,
 		required: true,
 	},
-	dateAdded: {
-		type: Date,
-		default: Date.now,
+	ingredient_qty_adding: {
+		type: Number,
+		required: true,
+	},
+	instructions: {
+		type: [String],
+		required: true,
+	},
+	per_unit_price: {
+		type: Number,
+		required: true,
+	},
+	size_per_unit: {
+		type: String,
+		required: true,
+	},
+	recipe_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'Recipe', // Reference to the Recipe model
+		required: true,
+	},
+	mart_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'Mart', // Reference to the Mart model
+		required: true,
 	},
 });
 
