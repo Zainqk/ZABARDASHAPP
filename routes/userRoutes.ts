@@ -1,4 +1,5 @@
 import express from 'express';
+import verifyToken from '../middleware/verifyToken';
 import {
 	register,
 	login,
@@ -20,10 +21,12 @@ router.post('/forgotPassword', forgotPassword);
 router.post('/tokenVerification/:token', tokenVerification);
 router.post('/resetPassword', resetPassword);
 router.post('/emailVerification', emailVerification);
-router.get('/getAllCustomer', getAllCustomer);
-router.get('/getSingleCustomer/:id', getSingleCustomer);
 
-router.put('/updateCustomer/:id', updateCustomer);
-router.delete('/deleteCustomer/:id', deleteCustomer);
+// protected route
+
+router.get('/getAllCustomer', verifyToken, getAllCustomer);
+router.get('/getSingleCustomer/:id', verifyToken, getSingleCustomer);
+router.put('/updateCustomer/:id', verifyToken, updateCustomer);
+router.delete('/deleteCustomer/:id', verifyToken, deleteCustomer);
 
 export default router;

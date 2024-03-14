@@ -4,13 +4,11 @@ interface userInput {
 	email: string;
 }
 const generateToken = ({ email }: userInput) => {
-	const secretKey = 'yourSecretKey';
-
 	const token = jwt.sign(
 		{
 			email: email,
 		},
-		secretKey,
+		`${process.env.SECRETKEY}`,
 		{ expiresIn: '12h' } // Set the token expiration time as needed
 	);
 
