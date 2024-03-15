@@ -1,6 +1,12 @@
 import express from 'express';
 import verifyToken from '../middleware/verifyToken';
-import { addMart, uploadPic } from '../controllers/martController';
+import {
+	addMart,
+	uploadPic,
+	getAllMart,
+	addMartRating,
+	addMartCustomerFavourite,
+} from '../controllers/martController';
 import multer from 'multer';
 const router = express.Router();
 
@@ -26,8 +32,8 @@ const upload = multer({
 
 router.post('/addmart', verifyToken, addMart);
 router.post('/uploadpic', upload.single('image'), uploadPic);
-// router.get('/getSingleCustomer/:id', verifyToken, getSingleCustomer);
-// router.put('/updateCustomer/:id', verifyToken, updateCustomer);
-// router.delete('/deleteCustomer/:id', verifyToken, deleteCustomer);
+router.get('/getallmart/:id', verifyToken, getAllMart);
+router.post('/addmartrating', verifyToken, addMartRating);
+router.post('/addmartcustomerfavourite', verifyToken, addMartCustomerFavourite);
 
 export default router;

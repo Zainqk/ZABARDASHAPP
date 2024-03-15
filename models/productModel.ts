@@ -10,6 +10,7 @@ interface ProductInterface {
 	images: string[];
 	status: string;
 	subtitle: string;
+	isFeatured: string;
 	variation: {
 		title: string;
 		price: number;
@@ -53,6 +54,10 @@ const productSchema = new Schema<ProductInterface>(
 			required: true,
 		},
 		subtitle: {
+			type: String,
+			required: true,
+		},
+		isFeatured: {
 			type: String,
 			required: true,
 		},
