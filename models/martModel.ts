@@ -25,9 +25,11 @@ const martSchema = new Schema<MartInterface>(
 		},
 		isFeatured: {
 			type: Boolean,
+			default: false,
 		},
 		no_of_views: {
 			type: Number,
+			default: 0,
 		},
 		vendor_id: {
 			type: Schema.Types.ObjectId,

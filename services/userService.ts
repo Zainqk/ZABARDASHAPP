@@ -202,7 +202,10 @@ const loginCustomer = async ({ email, password }: loginAdminInterface) => {
 
 		const token = generateToken({ email: customer.email });
 
-		return { success: true, customer: { email: customer.email, token } };
+		return {
+			success: true,
+			customer: { email: customer.email, username: customer.username, token },
+		};
 	} catch (error) {
 		console.error(error);
 		return { success: false, message: 'Login internal server error' };

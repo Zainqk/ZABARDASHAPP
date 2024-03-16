@@ -31,8 +31,8 @@ const upload = multer({
 // protected route
 
 router.post('/addmart', verifyToken, addMart);
-router.post('/uploadpic', upload.single('image'), uploadPic);
-router.get('/getallmart/:id', verifyToken, getAllMart);
+router.post('/uploadpic', verifyToken, upload.single('image'), uploadPic);
+router.get('/getallmart', verifyToken, getAllMart);
 router.post('/addmartrating', verifyToken, addMartRating);
 router.post('/addmartcustomerfavourite', verifyToken, addMartCustomerFavourite);
 
