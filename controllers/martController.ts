@@ -193,8 +193,6 @@ const getAllMart = async (req: Request, res: Response) => {
 	}
 };
 
-export default getAllMart;
-
 const addMartRating = async (req: Request, res: Response) => {
 	try {
 		const { customer_id, mart_id, no_of_rating, comment } = req.body;

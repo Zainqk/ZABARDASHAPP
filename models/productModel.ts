@@ -59,7 +59,7 @@ const productSchema = new Schema<ProductInterface>(
 		},
 		isFeatured: {
 			type: String,
-			required: true,
+			required: false,
 		},
 		variation: [
 			{
