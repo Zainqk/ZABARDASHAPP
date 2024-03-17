@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Mart from '../models/martModel';
+import Product from '../models/productModel';
 import Rating from '../models/ratingModel';
 import CustomerFavourite from '../models/customerFavouriteModel';
 import mongoose from 'mongoose';
@@ -185,8 +186,13 @@ const getAllMart = async (req: Request, res: Response) => {
 				},
 			},
 		]);
+		const featuredProducts = await Product.find({ isFeatured: true });
 
-		res.status(200).json({ success: true, marts: allMartWithRatings });
+		res.status(200).json({
+			success: true,
+			marts: allMartWithRatings,
+			featuredProducts: featuredProducts,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });

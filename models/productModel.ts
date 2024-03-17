@@ -7,7 +7,7 @@ interface ProductInterface {
 	description: string;
 	price: number;
 	stockQuantity: number;
-	images: string[];
+	images: string;
 	status: string;
 	subtitle: string;
 	isFeatured: string;
@@ -46,7 +46,7 @@ const productSchema = new Schema<ProductInterface>(
 			required: true,
 		},
 		images: {
-			type: [String],
+			type: String,
 			required: true,
 		},
 		status: {

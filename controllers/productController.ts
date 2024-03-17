@@ -1,23 +1,43 @@
 import { Request, Response } from 'express';
 import Product from '../models/productModel';
 
-//addProduct
 const addProduct = async (req: Request, res: Response) => {
 	try {
-		const { name, address, vendor_id, img } = req.body;
+		const {
+			name,
+			category_id,
+			user_id,
+			description,
+			price,
+			stockQuantity,
+			images,
+			status,
+			subtitle,
+			isFeatured,
+			variation,
+		} = req.body;
 
-		// Create a new mart object
+		// Create a new product object
 		const newProduct = new Product({
 			name,
-			address,
-			img: img,
-			vendor_id,
+			category_id,
+			user_id,
+			description,
+			price,
+			stockQuantity,
+			images,
+			status,
+			subtitle,
+			isFeatured,
+			variation,
 		});
 
-		// Save the new mart to the database
+		// Save the new product to the database
 		await newProduct.save();
 
-		res.status(201).json({ success: true, message: 'Mart added successfully' });
+		res
+			.status(201)
+			.json({ success: true, message: 'Product added successfully' });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
