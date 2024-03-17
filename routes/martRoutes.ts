@@ -28,7 +28,7 @@ const upload = multer({
 	},
 });
 
-// protected route
+// protected routes
 
 router.post('/addmart', verifyToken, addMart);
 router.post('/uploadpic', verifyToken, upload.single('image'), uploadPic);
