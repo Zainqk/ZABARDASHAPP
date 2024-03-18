@@ -4,6 +4,7 @@ interface ProductInterface {
 	name: string;
 	category_id: mongoose.Types.ObjectId; // Adjusted the type to mongoose.Types.ObjectId
 	user_id: mongoose.Types.ObjectId;
+	mart_id: mongoose.Types.ObjectId;
 	description: string;
 	price: number;
 	stockQuantity: number;
@@ -33,6 +34,11 @@ const productSchema = new Schema<ProductInterface>(
 			ref: 'User', // Ensure 'User' is the correct model names
 			required: true,
 		},
+		mart_id: {
+			type: Schema.Types.ObjectId,
+			ref: 'Mart', // Ensure 'User' is the correct model names
+			required: true,
+		},
 		description: {
 			type: String,
 			required: true,
@@ -60,6 +66,7 @@ const productSchema = new Schema<ProductInterface>(
 		isFeatured: {
 			type: String,
 			required: false,
+			default: 'false',
 		},
 		variation: [
 			{
