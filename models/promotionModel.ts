@@ -3,6 +3,7 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 interface PromotionInterface extends Document {
 	name: string;
 	vendor_id: Schema.Types.ObjectId; // Assuming this references the vendor ID
+	product_id: Schema.Types.ObjectId;
 	starting_date: Date;
 	end_date: Date;
 	discount_value: number;
@@ -19,6 +20,11 @@ const promotionSchema = new Schema<PromotionInterface>(
 		vendor_id: {
 			type: Schema.Types.ObjectId,
 			ref: 'Vendor', // Reference to the Vendor model assuming it exists
+			required: true,
+		},
+		product_id: {
+			type: Schema.Types.ObjectId,
+			ref: 'Product', //
 			required: true,
 		},
 		starting_date: {
