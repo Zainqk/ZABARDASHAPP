@@ -6,6 +6,7 @@ import {
 	getAllMart,
 	addMartRating,
 	addMartCustomerFavourite,
+	getCustomerFavoriteMart,
 } from '../controllers/martController';
 import multer from 'multer';
 const router = express.Router();
@@ -33,6 +34,7 @@ const upload = multer({
 router.post('/addmart', verifyToken, addMart);
 router.post('/uploadpic', verifyToken, upload.single('image'), uploadPic);
 router.get('/getallmart', verifyToken, getAllMart);
+router.get('/getcustomerfavouritemart', verifyToken, getCustomerFavoriteMart);
 router.post('/addmartrating', verifyToken, addMartRating);
 router.post('/addmartcustomerfavourite', verifyToken, addMartCustomerFavourite);
 
