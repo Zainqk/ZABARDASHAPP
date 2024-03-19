@@ -2,7 +2,8 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 // Define the interface for the Order
 interface OrderInterface {
-	customerID: mongoose.Types.ObjectId;
+	customerId: mongoose.Types.ObjectId;
+	martId: mongoose.Types.ObjectId;
 	status: string;
 	paymentStatus: string;
 	paymentMethod: string;
@@ -11,7 +12,8 @@ interface OrderInterface {
 	discounts: number;
 	product: {
 		product_id: mongoose.Types.ObjectId;
-		variant_title: string;
+		quantity: number;
+		variant_id: string;
 	}[];
 	taxAmount: number;
 	shippingFee: number;
@@ -23,14 +25,19 @@ interface OrderInterface {
 // Define the schema for the Order
 const orderSchema = new Schema<OrderInterface>(
 	{
-		customerID: {
+		customerId: {
 			type: Schema.Types.ObjectId,
 			ref: 'User', // Reference to the User model
 			required: true,
 		},
+		martId: {
+			type: Schema.Types.ObjectId,
+			ref: 'Mart', // Reference to the User model
+			required: true,
+		},
 		status: {
 			type: String,
-			required: true,
+			default: 'Pending',
 		},
 		paymentStatus: {
 			type: String,
@@ -59,7 +66,8 @@ const orderSchema = new Schema<OrderInterface>(
 					ref: 'Product', // Reference to the Product model
 					required: true,
 				},
-				variant_title: {
+				quantity: { type: Number, required: true, default: 1 },
+				variant_id: {
 					type: String,
 					required: true,
 				},
@@ -79,7 +87,6 @@ const orderSchema = new Schema<OrderInterface>(
 		},
 		cancellation_reason: {
 			type: String,
-			required: true,
 		},
 	},
 	{
