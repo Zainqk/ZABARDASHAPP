@@ -40,6 +40,10 @@ interface emailVerifInterface {
 interface registerAdminInterface {
 	userId: string;
 }
+interface verifyOtpInterface {
+	otp: string;
+	userId: string;
+}
 interface getCustomerByIdInterface {
 	id: string;
 }
@@ -64,7 +68,42 @@ const createCustomer = async ({
 		}
 
 		// Generate a reset token
-		const resetToken = await generateResetToken({ email });
+		// const resetToken = await generateResetToken({ email });
+		// Create a transporter for sending emails
+		// const transporter = nodemailer.createTransport({
+		// 	service: 'gmail',
+		// 	auth: {
+		// 		user: 'mabbask440@gmail.com',
+		// 		pass: `${process.env.APP_PASSWORD}`,
+		// 	},
+		// });
+
+		let resetTokenOrVerificationCode = '';
+		let mailOptions;
+		if (userType === 'customer') {
+			// Generate a random four-digit number for customers
+			resetTokenOrVerificationCode = Math.floor(
+				1000 + Math.random() * 9000
+			).toString();
+			// Compose the email
+			mailOptions = {
+				from: `${process.env.FROM}`,
+				to: email,
+				subject: 'Email Verification',
+				text: `Your email verification code is: ${resetTokenOrVerificationCode}`,
+			};
+		} else {
+			// Generate a reset token for vendors or other user types
+			resetTokenOrVerificationCode = await generateResetToken({ email });
+			// Compose the email
+			mailOptions = {
+				from: `${process.env.FROM}`,
+				to: email,
+				subject: 'Email Verification',
+				text: `Click the following link to reset your password: http://localhost:4000/verifcation/${resetTokenOrVerificationCode}`,
+			};
+		}
+
 		// Create a transporter for sending emails
 		const transporter = nodemailer.createTransport({
 			service: 'gmail',
@@ -73,14 +112,6 @@ const createCustomer = async ({
 				pass: `${process.env.APP_PASSWORD}`,
 			},
 		});
-
-		// Compose the email
-		const mailOptions = {
-			from: `${process.env.FROM}`,
-			to: email,
-			subject: 'Email Verification',
-			text: `Click the following link to reset your password: http://localhost:4000/verifcation/${resetToken}`,
-		};
 
 		// Send the email
 		const info = await transporter.sendMail(mailOptions);
@@ -102,7 +133,14 @@ const createCustomer = async ({
 		}
 
 		// Add user information to the array
-		userDataArray.push({ userId, username, email, password, userType });
+		userDataArray.push({
+			userId,
+			username,
+			email,
+			password,
+			userType,
+			resetTokenOrVerificationCode,
+		});
 
 		// Write the updated user information back to config.json
 		fs.writeFileSync(configFilePath, JSON.stringify(userDataArray, null, 2));
@@ -133,6 +171,37 @@ const emailVerif = ({
 			}
 		});
 	});
+};
+
+const verifyOtp = async ({ otp, userId }: verifyOtpInterface) => {
+	try {
+		// Read user data from config.json
+		const configData = fs.readFileSync(configFilePath);
+		const userDataArray = JSON.parse(configData);
+
+		// Find user information by userId
+		const userData = userDataArray.find((user: any) => user.userId === userId);
+
+		if (!userData) {
+			return { success: false, message: 'Invalid data in config.json' };
+		}
+		// console.log('The admin registration data in the config.json:', userData);
+
+		if (userData.resetTokenOrVerificationCode === otp) {
+			return {
+				success: true,
+				message: 'Otp verified successfully',
+			};
+		} else {
+			return {
+				success: false,
+				message: 'Incorrect Otp',
+			};
+		}
+	} catch (error) {
+		console.error(error);
+		return { success: false, message: 'Registration internal server error' };
+	}
 };
 
 const registerCustomer = async ({ userId }: registerAdminInterface) => {
@@ -363,4 +432,5 @@ export {
 	getCustomerById,
 	updateCustomers,
 	deleteCustomers,
+	verifyOtp,
 };

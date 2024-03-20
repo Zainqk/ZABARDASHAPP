@@ -12,6 +12,7 @@ import {
 	getCustomerById,
 	updateCustomers,
 	deleteCustomers,
+	verifyOtp,
 } from '../services/userService';
 import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
@@ -69,7 +70,32 @@ const emailVerification = async (req: Request, res: Response) => {
 		});
 	}
 };
+const otpVerification = async (req: Request, res: Response) => {
+	const { userId, otp } = req.body;
 
+	try {
+		const result = await verifyOtp({
+			otp,
+			userId,
+		});
+		if (result.success) {
+			const response = await registerCustomer({ userId });
+			if (response.success) {
+				res.status(200).json(response);
+			} else {
+				res.status(500).json(response);
+			}
+		} else {
+			res.status(500).json(result);
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
 // Login Admin api
 const login = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
@@ -277,4 +303,5 @@ export {
 	deleteCustomer,
 	resetPassword,
 	emailVerification,
+	otpVerification,
 };
