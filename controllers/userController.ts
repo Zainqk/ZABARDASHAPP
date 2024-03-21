@@ -44,7 +44,7 @@ const register = async (req: Request, res: Response) => {
 		});
 	}
 };
-
+// email verification API
 const emailVerification = async (req: Request, res: Response) => {
 	const { userId, token } = req.body;
 
