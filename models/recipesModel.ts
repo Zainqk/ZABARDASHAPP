@@ -38,5 +38,5 @@ const recipeSchema: Schema<RecipeInterface> = new Schema(
 
 // Create the Recipe model
 const RecipeModel = mongoose.model<RecipeInterface>('Recipe', recipeSchema);
-
-export { RecipeInterface, RecipeModel };
+export { RecipeInterface };
+export default RecipeModel;
