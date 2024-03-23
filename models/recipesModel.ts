@@ -5,8 +5,10 @@ interface RecipeInterface extends Document {
 	name: string;
 	prep_time: number;
 	cook_time: number;
+	instructions: string[];
 	status: string;
 	img: string;
+	mart_id: mongoose.Types.ObjectId[];
 }
 
 // Define the schema for the recipe
@@ -32,6 +34,17 @@ const recipeSchema: Schema<RecipeInterface> = new Schema(
 			type: String,
 			required: true,
 		},
+		instructions: {
+			type: [String],
+			required: true,
+		},
+		mart_id: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Mart', // Reference to the Mart model
+				required: true,
+			},
+		],
 	},
 	{ timestamps: true }
 ); // Enable timestamps for createdAt and updatedAt fields

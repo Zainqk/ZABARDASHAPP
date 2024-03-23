@@ -3,9 +3,9 @@ import mongoose, { Model, Schema } from 'mongoose';
 interface IngredientInterface {
 	name: string;
 	price: number;
-	ingredient_qty_adding: number;
+	ingredient_qty_adding: string;
 	instructions: string[];
-	per_unit_price: number;
+	per_unit_price: string;
 	size_per_unit: string;
 	recipe_id: mongoose.Types.ObjectId;
 	mart_id: mongoose.Types.ObjectId;
@@ -21,15 +21,12 @@ const ingredientSchema = new Schema<IngredientInterface>({
 		required: true,
 	},
 	ingredient_qty_adding: {
-		type: Number,
+		type: String,
 		required: true,
 	},
-	instructions: {
-		type: [String],
-		required: true,
-	},
+
 	per_unit_price: {
-		type: Number,
+		type: String,
 		required: true,
 	},
 	size_per_unit: {
@@ -39,11 +36,6 @@ const ingredientSchema = new Schema<IngredientInterface>({
 	recipe_id: {
 		type: Schema.Types.ObjectId,
 		ref: 'Recipe', // Reference to the Recipe model
-		required: true,
-	},
-	mart_id: {
-		type: Schema.Types.ObjectId,
-		ref: 'Mart', // Reference to the Mart model
 		required: true,
 	},
 });

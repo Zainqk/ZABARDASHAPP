@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
 import Recipe from '../models/recipesModel';
+import Ingredient from '../models/ingredientModel';
 import path from 'path';
 //addRecipes
 const addRecipes = async (req: Request, res: Response) => {
 	try {
-		const { name, prep_time, cook_time, status, img } = req.body;
+		const { name, prep_time, cook_time, status, img, mart_id, instructions } =
+			req.body;
 
 		// Create a new recipe object
 		const newRecipe = new Recipe({
@@ -13,6 +15,8 @@ const addRecipes = async (req: Request, res: Response) => {
 			cook_time,
 			status,
 			img,
+			mart_id,
+			instructions,
 		});
 
 		// Save the new recipe to the database
@@ -38,4 +42,39 @@ const getAllRecipes = async (req: Request, res: Response) => {
 	}
 };
 
-export { addRecipes, getAllRecipes };
+const addIngredient = async (req: Request, res: Response) => {
+	try {
+		const {
+			name,
+			price,
+			ingredient_qty_adding,
+
+			per_unit_price,
+			size_per_unit,
+			recipe_id,
+		} = req.body;
+
+		// Create a new ingredient object
+		const newIngredient = new Ingredient({
+			name,
+			price,
+			ingredient_qty_adding,
+
+			per_unit_price,
+			size_per_unit,
+			recipe_id,
+		});
+
+		// Save the new ingredient to the database
+		await newIngredient.save();
+
+		res
+			.status(201)
+			.json({ success: true, message: 'Ingredient added successfully' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
+export { addRecipes, getAllRecipes, addIngredient };
