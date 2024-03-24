@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 // protected routes
-
+// addrecipes api
 router.post('/addrecipes', verifyToken, addRecipes);
 router.get('/getallrecipes', verifyToken, getAllRecipes);
 router.post('/addingredient', verifyToken, addIngredient);
