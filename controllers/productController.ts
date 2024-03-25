@@ -59,5 +59,14 @@ const getProductsByMartId = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
+const getAllProducts = async (req: Request, res: Response) => {
+	try {
+		const products = await Product.find();
 
-export { addProduct, getProductsByMartId };
+		res.status(200).json({ success: true, products });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+export { addProduct, getProductsByMartId, getAllProducts };

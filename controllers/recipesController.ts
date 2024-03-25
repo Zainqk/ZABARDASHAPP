@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import Recipe from '../models/recipesModel';
 import Ingredient from '../models/ingredientModel';
+import Instruction from '../models/InstructionModel';
 import path from 'path';
 //addRecipes
 const addRecipes = async (req: Request, res: Response) => {
 	try {
-		const { name, prep_time, cook_time, status, img, mart_id, instructions } =
-			req.body;
+		const { name, prep_time, cook_time, status, img, mart_id } = req.body;
 
 		// Create a new recipe object
 		const newRecipe = new Recipe({
@@ -16,7 +16,6 @@ const addRecipes = async (req: Request, res: Response) => {
 			status,
 			img,
 			mart_id,
-			instructions,
 		});
 
 		// Save the new recipe to the database
@@ -77,4 +76,61 @@ const addIngredient = async (req: Request, res: Response) => {
 	}
 };
 
-export { addRecipes, getAllRecipes, addIngredient };
+const addInstruction = async (req: Request, res: Response) => {
+	try {
+		const { instructions, recipe_id } = req.body;
+
+		// Create a new Instruction object
+		const newInstruction = new Instruction({
+			instructions,
+			recipe_id,
+		});
+
+		// Save the new instruction to the database
+		await newInstruction.save();
+
+		res
+			.status(201)
+			.json({ success: true, message: 'Instruction added successfully' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
+const getRecipesDetailByRecipesId = async (req: Request, res: Response) => {
+	try {
+		const recipe_id = req.params.id; // Retrieve recipe_id from request parameters
+
+		// Query the database to find the recipe details based on recipe_id
+		const ingredient = await Ingredient.find({ recipe_id });
+		const instruction = await Instruction.find({ recipe_id });
+
+		if (!ingredient) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'ingredient not found' });
+		} else if (!instruction) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'instruction not found' });
+		}
+
+		res.status(200).json({
+			success: true,
+			ingredient: ingredient,
+			instruction: instruction,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
+export {
+	addRecipes,
+	getAllRecipes,
+	addIngredient,
+	addInstruction,
+	getRecipesDetailByRecipesId,
+};
