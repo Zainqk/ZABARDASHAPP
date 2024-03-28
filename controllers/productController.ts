@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Product from '../models/productModel';
+import Mart from '../models/martModel';
 import Saving from '../models/savingModel';
 
 const addProduct = async (req: Request, res: Response) => {
@@ -134,14 +135,30 @@ const getSavingProducts = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
-// api
+// api's
 const getSavingProductsById = async (req: Request, res: Response) => {
 	try {
-		const productId = req.params.id;
+		const { id, name } = req.query;
+
+		if (!name || typeof name !== 'string') {
+			return res
+				.status(400)
+				.json({ success: false, message: 'Invalid product name' });
+		}
+		const regex = new RegExp(name, 'i');
+
+		const marts = await Product.find({ name: { $regex: regex } })
+			.populate({
+				path: 'mart_id',
+			})
+			.select(
+				'-_id -name -category_id -user_id -mart_id -description -price -stockQuantity -images -status -subtitle -isFeatured -variation -createdAt -updatedAt -__v'
+			)
+			.exec();
 
 		const savingProducts = await Saving.find({
 			is_saving: true,
-			product_id: productId,
+			product_id: id,
 		});
 
 		// Check if there are any saving products
@@ -151,7 +168,9 @@ const getSavingProductsById = async (req: Request, res: Response) => {
 				.json({ success: false, message: 'No saving products found' });
 		}
 
-		res.status(200).json({ success: true, saving_products: savingProducts });
+		res
+			.status(200)
+			.json({ success: true, saving_products: savingProducts, marts: marts });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });

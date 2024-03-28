@@ -18,5 +18,5 @@ router.get('/getproductsbymartid/:mart_id', verifyToken, getProductsByMartId);
 router.get('/getallproducts', verifyToken, getAllProducts);
 router.post('/addsavingproduct', verifyToken, addSavingProduct);
 router.get('/getsavingproducts', verifyToken, getSavingProducts);
-router.get('/getsavingproductsbyid/:id', verifyToken, getSavingProductsById);
+router.get('/getsavingproductsbyid', verifyToken, getSavingProductsById);
 export default router;
