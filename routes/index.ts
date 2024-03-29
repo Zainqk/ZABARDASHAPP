@@ -6,6 +6,7 @@ import martRoutes from './martRoutes';
 import productRoutes from './productRoutes';
 import orderRoutes from './orderRoutes';
 import recipesRoutes from './recipesRoutes';
+import categoryRoutes from './categoryRoute';
 const router = express.Router();
 
 // Mount user routes under '/user'
@@ -25,5 +26,8 @@ router.use('/order', orderRoutes);
 
 // Mount admin routes under '/recipe'
 router.use('/recipe', recipesRoutes);
+
+// Mount admin routes under '/category'
+router.use('/category', categoryRoutes);
 
 export default router;
