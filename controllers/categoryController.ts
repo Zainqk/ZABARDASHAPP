@@ -4,8 +4,6 @@ const addCategory = async (req: Request, res: Response) => {
 	try {
 		const { name, desc } = req.body;
 
-		console.log('the data is:', name, desc);
-
 		// Check if both name and desc are provided
 		if (!name || !desc) {
 			return res
