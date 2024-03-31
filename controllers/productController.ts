@@ -3,6 +3,51 @@ import Product from '../models/productModel';
 import Mart from '../models/martModel';
 import Saving from '../models/savingModel';
 
+// const addProduct = async (req: Request, res: Response) => {
+// 	try {
+// 		const {
+// 			name,
+// 			category_id,
+// 			user_id,
+// 			description,
+// 			price,
+// 			stockQuantity,
+// 			images,
+// 			status,
+// 			subtitle,
+// 			isFeatured,
+// 			variation,
+// 			mart_id,
+// 		} = req.body;
+
+// 		// Create a new product object
+// 		const newProduct = new Product({
+// 			name,
+// 			category_id,
+// 			user_id,
+// 			description,
+// 			price,
+// 			stockQuantity,
+// 			images,
+// 			status,
+// 			subtitle,
+// 			isFeatured,
+// 			variation,
+// 			mart_id,
+// 		});
+
+// 		// Save the new product to the database
+// 		await newProduct.save();
+
+// 		res
+// 			.status(201)
+// 			.json({ success: true, message: 'Product added successfully' });
+// 	} catch (error) {
+// 		console.error(error);
+// 		res.status(500).json({ success: false, message: 'Internal server error' });
+// 	}
+// };
+
 const addProduct = async (req: Request, res: Response) => {
 	try {
 		const {
