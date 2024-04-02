@@ -11,35 +11,6 @@ interface IngredientInterface {
 	mart_id: mongoose.Types.ObjectId;
 }
 
-// const ingredientSchema = new Schema<IngredientInterface>({
-// 	name: {
-// 		type: String,
-// 		required: true,
-// 	},
-// 	price: {
-// 		type: Number,
-// 		required: true,
-// 	},
-// 	ingredient_qty_adding: {
-// 		type: String,
-// 		required: true,
-// 	},
-
-// 	per_unit_price: {
-// 		type: String,
-// 		required: true,
-// 	},
-// 	size_per_unit: {
-// 		type: String,
-// 		required: true,
-// 	},
-// 	recipe_id: {
-// 		type: Schema.Types.ObjectId,
-// 		ref: 'Recipe', // Reference to the Recipe model
-// 		required: true,
-// 	},
-// });
-
 const ingredientSchema = new Schema<IngredientInterface>({
 	name: {
 		type: String,
