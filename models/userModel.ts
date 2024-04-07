@@ -3,8 +3,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 interface UserInterface {
-	username: string;
+	name: string;
 	email: string;
+	phoneNumber: number;
 	password: string;
 	userType: string;
 	address: string;
@@ -13,12 +14,17 @@ interface UserInterface {
 }
 
 const userSchema = new Schema<UserInterface>({
-	username: {
+	name: {
 		type: String,
 		required: true,
 	},
 	email: {
 		type: String,
+		required: true,
+		unique: true,
+	},
+	phoneNumber: {
+		type: Number,
 		required: true,
 		unique: true,
 	},

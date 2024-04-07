@@ -21,14 +21,15 @@ import generateToken from '../utils/generateToken';
 
 // Register Admin api
 const register = async (req: Request, res: Response) => {
-	const { username, email, password, userType } = req.body;
+	const { name, email, password, userType, phoneNumber } = req.body;
 
 	try {
 		const result = await createCustomer({
-			username,
+			name,
 			email,
 			password,
 			userType,
+			phoneNumber,
 		});
 
 		if (result.success) {

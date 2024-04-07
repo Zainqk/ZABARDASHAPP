@@ -7,6 +7,7 @@ import {
 	addSavingProduct,
 	getSavingProducts,
 	getSavingProductsById,
+	getMartsByProductName,
 } from '../controllers/productController';
 import multer from 'multer';
 const router = express.Router();
@@ -19,4 +20,5 @@ router.get('/getallproducts', verifyToken, getAllProducts);
 router.post('/addsavingproduct', verifyToken, addSavingProduct);
 router.get('/getsavingproducts', verifyToken, getSavingProducts);
 router.get('/getsavingproductsbyid', verifyToken, getSavingProductsById);
+router.get('/getMartsByProductName', verifyToken, getMartsByProductName);
 export default router;

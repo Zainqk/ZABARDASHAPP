@@ -11,10 +11,11 @@ const configFilePath = path.join(__dirname, '../config/config.json');
 const tempStorage = new NodeCache();
 
 interface createCustomerInterface {
-	username: string;
+	name: string;
 	email: string;
 	password: string;
 	userType: string;
+	phoneNumber: number;
 }
 interface loginAdminInterface {
 	email: string;
@@ -51,7 +52,8 @@ interface deleteCustomerInterface {
 	id: string;
 }
 const createCustomer = async ({
-	username,
+	name,
+	phoneNumber,
 	email,
 	password,
 	userType,
@@ -135,7 +137,8 @@ const createCustomer = async ({
 		// Add user information to the array
 		userDataArray.push({
 			userId,
-			username,
+			name,
+			phoneNumber,
 			email,
 			password,
 			userType,
@@ -228,7 +231,8 @@ const registerCustomer = async ({ userId }: registerAdminInterface) => {
 		}
 
 		const registerCustomer = await UserModal.create({
-			username: userData.username,
+			name: userData.name,
+			phoneNumber: userData.phoneNumber,
 			email: userData.email,
 			password: userData.password,
 			userType: userData.userType,
@@ -273,7 +277,7 @@ const loginCustomer = async ({ email, password }: loginAdminInterface) => {
 
 		return {
 			success: true,
-			customer: { email: customer.email, username: customer.username, token },
+			customer: { email: customer.email, username: customer.name, token },
 		};
 	} catch (error) {
 		console.error(error);

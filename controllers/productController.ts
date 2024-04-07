@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Product from '../models/productModel';
+import Category from '../models/categoryModel';
 import Mart from '../models/martModel';
 import Saving from '../models/savingModel';
 
@@ -54,8 +55,8 @@ const getProductsByMartId = async (req: Request, res: Response) => {
 
 		// Find products by mart_id
 		const products = await Product.find({ mart_id });
-
-		res.status(200).json({ success: true, products });
+		const categories = await Category.find({}, '_id name');
+		res.status(200).json({ success: true, products, categories: categories });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
@@ -176,6 +177,34 @@ const getSavingProductsById = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
+
+const getMartsByProductName = async (req: Request, res: Response) => {
+	try {
+		const { name } = req.query;
+
+		if (!name || typeof name !== 'string') {
+			return res
+				.status(400)
+				.json({ success: false, message: 'Invalid product name' });
+		}
+		const regex = new RegExp(name, 'i');
+
+		const marts = await Product.find({ name: { $regex: regex } })
+			.populate({
+				path: 'mart_id',
+			})
+			.select(
+				'-_id -name -category_id -user_id -mart_id -description -price -stockQuantity -images -status -subtitle -isFeatured -variation -createdAt -updatedAt -__v'
+			)
+			.exec();
+
+		res.status(200).json({ success: true, marts: marts });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 export {
 	addProduct,
 	getProductsByMartId,
@@ -183,4 +212,5 @@ export {
 	addSavingProduct,
 	getSavingProducts,
 	getSavingProductsById,
+	getMartsByProductName,
 };
