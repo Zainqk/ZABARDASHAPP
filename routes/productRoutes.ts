@@ -15,7 +15,7 @@ const router = express.Router();
 // protected route
 
 router.post('/addproduct', verifyToken, addProduct);
-router.get('/getproductsbymartid/:mart_id', verifyToken, getProductsByMartId);
+router.get('/getproductsbymartid', verifyToken, getProductsByMartId);
 router.get('/getallproducts', verifyToken, getAllProducts);
 router.post('/addsavingproduct', verifyToken, addSavingProduct);
 router.get('/getsavingproducts', verifyToken, getSavingProducts);

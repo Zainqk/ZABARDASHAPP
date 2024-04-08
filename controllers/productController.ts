@@ -51,10 +51,34 @@ const addProduct = async (req: Request, res: Response) => {
 
 const getProductsByMartId = async (req: Request, res: Response) => {
 	try {
-		const { mart_id } = req.params;
+		const { mart_id, category_id, isFeatured, searchByName } = req.query;
+		let query: {
+			mart_id: string;
+			category_id?: any;
+			isFeatured?: string;
+			name?: RegExp;
+		} = {
+			mart_id: mart_id as string,
+		};
 
-		// Find products by mart_id
-		const products = await Product.find({ mart_id });
+		if (category_id) {
+			if (Array.isArray(category_id)) {
+				// If category_id is an array, use it as is
+				query.category_id = { $in: category_id };
+			} else {
+				// If category_id is a single value, convert it to an array
+				query.category_id = [category_id];
+			}
+		}
+		if (isFeatured) {
+			query.isFeatured = isFeatured as string;
+		}
+		if (searchByName) {
+			query.name = new RegExp(searchByName as string, 'i');
+		}
+
+		// Find products by mart_id and optional category_id
+		const products = await Product.find(query);
 		const categories = await Category.find({}, '_id name');
 		res.status(200).json({ success: true, products, categories: categories });
 	} catch (error) {
