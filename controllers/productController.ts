@@ -80,7 +80,15 @@ const getProductsByMartId = async (req: Request, res: Response) => {
 		// Find products by mart_id and optional category_id
 		const products = await Product.find(query);
 		const categories = await Category.find({}, '_id name');
-		res.status(200).json({ success: true, products, categories: categories });
+		const martDetail = await Mart.findById(mart_id);
+		res
+			.status(200)
+			.json({
+				success: true,
+				products,
+				categories: categories,
+				mart: martDetail,
+			});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });

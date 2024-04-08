@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Order from '../models/orderModel';
+import mongoose from 'mongoose';
 const addOrder = async (req: Request, res: Response) => {
 	try {
 		const {
@@ -15,8 +16,10 @@ const addOrder = async (req: Request, res: Response) => {
 			totalAmount,
 			specialInstruction,
 			cancellationReason,
+			isDelivery,
 		} = req.body;
 
+		const orderNumber = `#${Math.floor(1000000 + Math.random() * 9000000)}`;
 		// Create a new order object
 		const newOrder = new Order({
 			customerId,
@@ -31,62 +34,45 @@ const addOrder = async (req: Request, res: Response) => {
 			totalAmount,
 			specialInstruction,
 			cancellationReason,
+			isDelivery,
+			orderNumber,
 		});
 
 		// Save the new order to the database
 		await newOrder.save();
 
-		res
-			.status(201)
-			.json({ success: true, message: 'Order added successfully' });
+		res.status(201).json({
+			orderNumber: orderNumber,
+			success: true,
+			message: 'Order added successfully',
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
-const getProcessing = async (req: Request, res: Response) => {
+const fetchOrders = async (req: Request, res: Response) => {
 	try {
-		const {
-			customerId,
-			martId,
-			paymentStatus,
-			paymentMethod,
-			shippingAddress,
-			subtotal,
-			discounts,
-			product,
-			taxAmount,
-			totalAmount,
-			specialInstruction,
-			cancellationReason,
-		} = req.body;
+		const { status, user_id } = req.query;
 
-		// Create a new order object
-		const newOrder = new Order({
-			customerId,
-			martId,
-			paymentStatus,
-			paymentMethod,
-			shippingAddress,
-			subtotal,
-			discounts,
-			product,
-			taxAmount,
-			totalAmount,
-			specialInstruction,
-			cancellationReason,
-		});
+		// Define the query object
+		const query: { customerId: mongoose.Types.ObjectId; status?: RegExp } = {
+			customerId: user_id as unknown as mongoose.Types.ObjectId, // Assuming user_id is a valid ObjectId
+		};
 
-		// Save the new order to the database
-		await newOrder.save();
+		// If status is provided, add it to the query
+		if (status && typeof status === 'string') {
+			query.status = new RegExp(status, 'i');
+		}
 
-		res
-			.status(201)
-			.json({ success: true, message: 'Order added successfully' });
+		// Fetch orders based on the query
+		const orders = await Order.find(query);
+
+		res.status(200).json({ success: true, orders });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
 
-export { addOrder };
+export { addOrder, fetchOrders };

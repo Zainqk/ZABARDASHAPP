@@ -5,7 +5,9 @@ interface OrderInterface {
 	customerId: mongoose.Types.ObjectId;
 	martId: mongoose.Types.ObjectId;
 	status: string;
+	orderNumber: string;
 	paymentStatus: string;
+	isDelivery: boolean;
 	paymentMethod: string;
 	shippingAddress: string;
 	subtotal: number;
@@ -38,6 +40,13 @@ const orderSchema = new Schema<OrderInterface>(
 		status: {
 			type: String,
 			default: 'Pending',
+		},
+		orderNumber: {
+			type: String,
+		},
+		isDelivery: {
+			type: Boolean,
+			default: true,
 		},
 		paymentStatus: {
 			type: String,
