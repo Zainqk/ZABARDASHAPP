@@ -65,6 +65,11 @@ const fetchOrders = async (req: Request, res: Response) => {
 			query.status = new RegExp(status, 'i');
 		}
 
+		// // If status is provided, add it to the query
+		// if (status && typeof status === 'string') {
+		// 	query.status = new RegExp(status, 'i');
+		// }
+
 		// Fetch orders based on the query
 		const orders = await Order.find(query);
 
