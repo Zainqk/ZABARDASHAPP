@@ -127,6 +127,28 @@ const getRecipesDetailByRecipesId = async (req: Request, res: Response) => {
 	}
 };
 
+// const addInstruction = async (req: Request, res: Response) => {
+// 	try {
+// 		const { instructions, recipe_id } = req.body;
+
+// 		// Create a new Instruction object
+// 		const newInstruction = new Instruction({
+// 			instructions,
+// 			recipe_id,
+// 		});
+
+// 		// Save the new instruction to the database
+// 		await newInstruction.save();
+
+// 		res
+// 			.status(201)
+// 			.json({ success: true, message: 'Instruction added successfully' });
+// 	} catch (error) {
+// 		console.error(error);
+// 		res.status(500).json({ success: false, message: 'Internal server error' });
+// 	}
+// };
+
 export {
 	addRecipes,
 	getAllRecipes,
