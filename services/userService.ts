@@ -277,7 +277,12 @@ const loginCustomer = async ({ email, password }: loginAdminInterface) => {
 
 		return {
 			success: true,
-			customer: { email: customer.email, username: customer.name, token },
+			customer: {
+				email: customer.email,
+				username: customer.name,
+				token,
+				id: customer._id,
+			},
 		};
 	} catch (error) {
 		console.error(error);
