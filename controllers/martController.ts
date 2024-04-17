@@ -262,7 +262,7 @@ const getCustomerFavoriteMart = async (req: Request, res: Response) => {
 		const customerId = req.query.customerId as string; // Get the customer ID from request query params
 
 		// Aggregate to join Mart with CustomerFavourite and calculate count of ratings for each mart
-		const favoriteMarts = await Mart.aggregate([
+		const FavoriteMarts = await Mart.aggregate([
 			{
 				$lookup: {
 					from: 'ratings', // Collection name for Rating model
@@ -296,11 +296,6 @@ const getCustomerFavoriteMart = async (req: Request, res: Response) => {
 				},
 			},
 			{
-				$match: {
-					customer_favourite: { $ne: [] }, // Filter only the marts that are favorites of the specified customer
-				},
-			},
-			{
 				$project: {
 					name: 1,
 					address: 1,
@@ -323,7 +318,7 @@ const getCustomerFavoriteMart = async (req: Request, res: Response) => {
 
 		res.status(200).json({
 			success: true,
-			favoriteMarts: favoriteMarts,
+			favoriteMarts: FavoriteMarts,
 		});
 	} catch (error) {
 		console.error(error);

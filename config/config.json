@@ -12,5 +12,19 @@
     "password": "pakistan12345",
     "userType": "vendor",
     "resetTokenOrVerificationCode": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlbmVtNzMxMDBAZG92ZXNpbG8uY29tIiwiaWF0IjoxNzEwOTAyNDc3LCJleHAiOjE3MTA5MDYwNzd9.b47psezkZIQs_xBdBnWwm7drEoUeZ31ppQapiMx4RG0"
+  },
+  {
+    "userId": "73dd8997-1c52-4b44-93cb-06958d24f1d2",
+    "email": "mi477048@gmail.com",
+    "password": "pakistan12345",
+    "userType": "customer",
+    "resetTokenOrVerificationCode": "7326"
+  },
+  {
+    "userId": "b324a4fa-a720-4385-922d-e02972aef88b",
+    "email": "mi477048@gmail.com",
+    "password": "pakistan12345",
+    "userType": "customer",
+    "resetTokenOrVerificationCode": "3963"
   }
 ]
