@@ -25,12 +25,12 @@ const userSchema = new Schema<UserInterface>({
 	},
 	phoneNumber: {
 		type: Number,
-		required: true,
+		// required: true,
 		unique: true,
 	},
 	password: {
 		type: String,
-		required: true,
+		// required: true,
 	},
 	userType: {
 		type: String,
