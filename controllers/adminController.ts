@@ -218,6 +218,30 @@ const getSingleAdmin = async (req: Request, res: Response) => {
 	}
 };
 
+// const getSingleAdmin = async (req: Request, res: Response) => {
+// 	const { id } = req.params;
+
+// 	try {
+// 		const result = await getAdminById({ id });
+
+// 		if (result.success) {
+// 			res.status(200).json({
+// 				success: true,
+// 				Admin: result.admins,
+// 			});
+// 		} else {
+// 			res.status(500).json({
+// 				success: false,
+// 				message: result.message,
+// 			});
+// 		}
+// 	} catch (error) {
+// 		res.status(500).json({
+// 			success: false,
+// 			message: 'Internal server error',
+// 		});
+// 	}
+// };
 // updateAdmin
 const updateAdmin = async (req: Request, res: Response) => {
 	try {
