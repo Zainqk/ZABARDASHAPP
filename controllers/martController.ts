@@ -185,6 +185,11 @@ const getAllMart = async (req: Request, res: Response) => {
 					},
 				},
 			},
+			{
+				$sort: {
+					no_of_views: -1, // Sort by no_of_views in descending order
+				},
+			},
 		]);
 		const featuredProducts = await Product.find({ isFeatured: true });
 
@@ -312,6 +317,11 @@ const getCustomerFavoriteMart = async (req: Request, res: Response) => {
 							null, // Set to null if there are no ratings
 						],
 					},
+				},
+			},
+			{
+				$sort: {
+					no_of_views: -1, // Sort by no_of_views in descending order
 				},
 			},
 		]);
