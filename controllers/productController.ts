@@ -78,17 +78,18 @@ const getProductsByMartId = async (req: Request, res: Response) => {
 		}
 
 		// Find products by mart_id and optional category_id
-		const products = await Product.find(query);
+		const products = await Product.find(query).populate('category_id', {
+			_id: 1,
+			name: 1,
+		});
 		const categories = await Category.find({}, '_id name');
 		const martDetail = await Mart.findById(mart_id);
-		res
-			.status(200)
-			.json({
-				success: true,
-				products,
-				categories: categories,
-				mart: martDetail,
-			});
+		res.status(200).json({
+			success: true,
+			products,
+			categories: categories,
+			mart: martDetail,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
@@ -96,7 +97,10 @@ const getProductsByMartId = async (req: Request, res: Response) => {
 };
 const getAllProducts = async (req: Request, res: Response) => {
 	try {
-		const products = await Product.find();
+		const products = await Product.find().populate('category_id', {
+			_id: 1,
+			name: 1,
+		});
 
 		res.status(200).json({ success: true, products });
 	} catch (error) {
