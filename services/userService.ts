@@ -365,7 +365,10 @@ interface updateCustomerInterface {
 const getAllCustomers = async () => {
 	try {
 		// Retrieve all admins from the database
-		const customers = await UserModal.find({}, { password: 0 });
+		const customers = await UserModal.find(
+			{ userType: 'customer' },
+			{ password: 0 }
+		);
 
 		return { success: true, customers };
 	} catch (error) {
@@ -395,7 +398,7 @@ const updateCustomers = async ({ id, updateData }: updateCustomerInterface) => {
 		if (existingAdmin && existingAdmin._id.toString() !== id) {
 			return {
 				success: false,
-				message: 'Customer already exists with this email',
+				message: 'Customer/Vendor already exists with this email',
 			};
 		}
 		// Find the admin by ID and update its data
@@ -404,7 +407,7 @@ const updateCustomers = async ({ id, updateData }: updateCustomerInterface) => {
 		});
 
 		if (!updatedCustomer) {
-			return { success: false, message: 'Admin not found' };
+			return { success: false, message: 'Vendor not found' };
 		}
 
 		return { success: true, customer: updatedCustomer };

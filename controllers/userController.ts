@@ -116,24 +116,6 @@ const login = async (req: Request, res: Response) => {
 		res.status(500).json({ message: 'Internal server error' });
 	}
 };
-// const login = async (req: Request, res: Response) => {
-// 	const { email, password } = req.body;
-// 	try {
-// 		const result = await loginCustomer({
-// 			email,
-// 			password,
-// 		});
-
-// 		if (result.success) {
-// 			res.status(200).json(result);
-// 		} else {
-// 			res.status(500).json(result);
-// 		}
-// 	} catch (error) {
-// 		console.error(error);
-// 		res.status(500).json({ message: 'Internal server error' });
-// 	}
-// };
 
 // Forgot  sPassword
 const forgotPassword = async (req: Request, res: Response) => {
@@ -236,6 +218,24 @@ const getAllCustomer = async (req: Request, res: Response) => {
 	}
 };
 
+//getAllVendor
+const getAllVendor = async (req: Request, res: Response) => {
+	try {
+		const result = await User.find({ userType: 'vendor' }, { password: 0 });
+		console.log('The result is:', result);
+
+		res.status(200).json({
+			success: true,
+			Vendors: result,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 // getSingleAdmin
 const getSingleCustomer = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -323,4 +323,5 @@ export {
 	resetPassword,
 	emailVerification,
 	otpVerification,
+	getAllVendor,
 };
