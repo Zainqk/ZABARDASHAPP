@@ -116,6 +116,24 @@ const login = async (req: Request, res: Response) => {
 		res.status(500).json({ message: 'Internal server error' });
 	}
 };
+// const login = async (req: Request, res: Response) => {
+// 	const { email, password } = req.body;
+// 	try {
+// 		const result = await loginCustomer({
+// 			email,
+// 			password,
+// 		});
+
+// 		if (result.success) {
+// 			res.status(200).json(result);
+// 		} else {
+// 			res.status(500).json(result);
+// 		}
+// 	} catch (error) {
+// 		console.error(error);
+// 		res.status(500).json({ message: 'Internal server error' });
+// 	}
+// };
 
 // Forgot  sPassword
 const forgotPassword = async (req: Request, res: Response) => {
