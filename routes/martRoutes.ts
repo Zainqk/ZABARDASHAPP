@@ -29,6 +29,24 @@ const upload = multer({
 	},
 });
 
+// // Define storage for uploaded files
+// const storage = multer.diskStorage({
+// 	destination: function (req, file, cb) {
+// 		cb(null, 'upload/images'); // Directory where uploaded files will be stored
+// 	},
+// 	filename: function (req, file, cb) {
+// 		cb(null, Date.now() + '-' + file.originalname); // Filename to save with timestamp
+// 	},
+// });
+
+// // Initialize multer upload middleware
+// const upload = multer({
+// 	storage: storage,
+// 	limits: {
+// 		fileSize: 10 * 1024 * 1024, // 10MB in bytes
+// 	},
+// });
+
 // protected routes
 
 router.post('/addmart', verifyToken, addMart);

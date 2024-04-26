@@ -286,6 +286,28 @@ const updateCustomer = async (req: Request, res: Response) => {
 	}
 };
 
+// const updateCustomer = async (req: Request, res: Response) => {
+// 	try {
+// 		const updateData = req.body;
+
+// 		const result = await updateCustomers({ id: req.params.id, updateData });
+
+// 		if (result.success) {
+// 			res.status(200).json({
+// 				success: true,
+// 				Customer: result.customer,
+// 				message: 'Customer updated successfully',
+// 			});
+// 		} else {
+// 			res.status(500).json({
+// 				success: false,
+// 				message: result.message,
+// 			});
+// 		}
+// 	} catch (err) {
+// 		res.status(500).send(err);
+// 	}
+// };
 // deleteAdmin
 const deleteCustomer = async (req: Request, res: Response) => {
 	try {
