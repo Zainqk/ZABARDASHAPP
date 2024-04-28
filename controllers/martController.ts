@@ -28,6 +28,40 @@ const addMart = async (req: Request, res: Response) => {
 	}
 };
 
+const updateMart = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params; // Extract mart ID from request parameters
+		const { name, address, img } = req.body; // Extract updated mart data from request body
+
+		// Validate input data (optional)
+
+		// Find the mart by ID
+		const mart = await Mart.findById(id);
+
+		// Check if mart exists
+		if (!mart) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Mart not found' });
+		}
+
+		// Update mart data
+		mart.name = name;
+		mart.address = address;
+		mart.img = img;
+
+		// Save the updated mart to the database
+		await mart.save();
+
+		res
+			.status(200)
+			.json({ success: true, message: 'Mart updated successfully' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const uploadPic = async (req: Request, res: Response) => {
 	try {
 		// Check if a file was uploaded
@@ -46,78 +80,6 @@ const uploadPic = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
-
-// const getAllMart = async (req: Request, res: Response) => {
-// 	try {
-// 		const customerId = req.params.id; // Get the customer ID from request params
-
-// 		// Aggregate to join Mart with CustomerFavourite and calculate count of ratings for each mart
-// 		const allMartWithRatings = await Mart.aggregate([
-// 			{
-// 				$lookup: {
-// 					from: 'ratings', // Collection name for Rating model
-// 					localField: '_id', // Field from Mart collection
-// 					foreignField: 'mart_id', // Field from Rating collection
-// 					as: 'ratings', // Array field in Mart containing ratings
-// 				},
-// 			},
-// 			{
-// 				$lookup: {
-// 					from: 'customerfavourites', // Collection name for CustomerFavourite model
-// 					let: { martId: '$_id' }, // Local field from Mart collection
-// 					pipeline: [
-// 						{
-// 							$match: {
-// 								$expr: {
-// 									$and: [
-// 										{ $eq: ['$mart_id', '$$martId'] }, // Match by mart ID
-// 										{
-// 											$eq: [
-// 												'$customer_id',
-// 												new mongoose.Types.ObjectId(customerId),
-// 											],
-// 										}, // Match by customer ID
-// 									],
-// 								},
-// 							},
-// 						},
-// 					],
-// 					as: 'customer_favourite', // Array field in Mart containing customer favourites
-// 				},
-// 			},
-// 			{
-// 				$project: {
-// 					name: 1,
-// 					address: 1,
-// 					img: 1,
-// 					isFeatured: 1,
-// 					no_of_views: 1,
-// 					vendor_id: 1,
-// 					ratingCount: { $size: '$ratings' }, // Count of ratings for each mart
-// 					isCustomerFavourite: {
-// 						$cond: [
-// 							{ $gt: [{ $size: '$customer_favourite' }, 0] },
-// 							true,
-// 							false,
-// 						],
-// 					},
-// 					averageRating: {
-// 						$cond: [
-// 							{ $gt: [{ $size: '$ratings' }, 0] },
-// 							{ $avg: '$ratings.no_of_rating' }, // Calculate average rating if there are ratings
-// 							null, // Set to null if there are no ratings
-// 						],
-// 					},
-// 				},
-// 			},
-// 		]);
-
-// 		res.status(200).json({ success: true, marts: allMartWithRatings });
-// 	} catch (error) {
-// 		console.error(error);
-// 		res.status(500).json({ success: false, message: 'Internal server error' });
-// 	}
-// };
 
 const getAllMart = async (req: Request, res: Response) => {
 	try {
@@ -452,4 +414,5 @@ export {
 	addMartRating,
 	addMartCustomerFavourite,
 	getCustomerFavoriteMart,
+	updateMart,
 };

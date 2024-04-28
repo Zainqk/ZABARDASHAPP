@@ -49,6 +49,56 @@ const addProduct = async (req: Request, res: Response) => {
 	}
 };
 
+const editProduct = async (req: Request, res: Response) => {
+	try {
+		const productId = req.params.id;
+		const updateFields = req.body;
+
+		// Find the product by ID and update its fields
+		const updatedProduct = await Product.findByIdAndUpdate(
+			productId,
+			updateFields,
+			{ new: true }
+		);
+
+		if (!updatedProduct) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Product not found' });
+		}
+
+		res.status(200).json({
+			success: true,
+			message: 'Product updated successfully',
+			updatedProduct,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+const deleteProduct = async (req: Request, res: Response) => {
+	try {
+		const productId = req.params.id;
+
+		// Find the product by ID and delete it
+		const deletedProduct = await Product.findByIdAndDelete(productId);
+
+		if (!deletedProduct) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Product not found' });
+		}
+
+		res
+			.status(200)
+			.json({ success: true, message: 'Product deleted successfully' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const getProductsByMartId = async (req: Request, res: Response) => {
 	try {
 		const { mart_id, category_id, isFeatured, searchByName } = req.query;
@@ -249,4 +299,6 @@ export {
 	getSavingProducts,
 	getSavingProductsById,
 	getMartsByProductName,
+	editProduct,
+	deleteProduct,
 };

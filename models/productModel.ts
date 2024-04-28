@@ -3,7 +3,7 @@ import mongoose, { Model, Schema } from 'mongoose';
 interface ProductInterface {
 	name: string;
 	category_id: mongoose.Types.ObjectId; // Adjusted the type to mongoose.Types.ObjectId
-	user_id: mongoose.Types.ObjectId;
+	vendor_id: mongoose.Types.ObjectId;
 	mart_id: mongoose.Types.ObjectId;
 	description: string;
 	price: number;
@@ -29,7 +29,7 @@ const productSchema = new Schema<ProductInterface>(
 			ref: 'Category', // Ensure 'Category' is the correct model name
 			required: true,
 		},
-		user_id: {
+		vendor_id: {
 			type: Schema.Types.ObjectId,
 			ref: 'User', // Ensure 'User' is the correct model names
 			required: true,
