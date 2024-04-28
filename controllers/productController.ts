@@ -3,6 +3,7 @@ import Product from '../models/productModel';
 import Category from '../models/categoryModel';
 import Mart from '../models/martModel';
 import Saving from '../models/savingModel';
+import QuantityModel from '../models/quantityModel';
 
 const addProduct = async (req: Request, res: Response) => {
 	try {
@@ -19,6 +20,7 @@ const addProduct = async (req: Request, res: Response) => {
 			isFeatured,
 			variation,
 			mart_id,
+			threshold,
 		} = req.body;
 
 		// Create a new product object
@@ -39,6 +41,16 @@ const addProduct = async (req: Request, res: Response) => {
 
 		// Save the new product to the database
 		await newProduct.save();
+
+		// Create a new product quantity object
+		const newProductQuantity = new QuantityModel({
+			product_id: newProduct._id, // Use the _id of the newly created product
+			quantity: stockQuantity, // Set the initial quantity
+			threshold: threshold, // Set the threshold for low stock alert
+		});
+
+		// Save the new product quantity to the database
+		await newProductQuantity.save();
 
 		res
 			.status(201)
