@@ -47,3 +47,31 @@ const IngredientModel: Model<IngredientInterface> = mongoose.model(
 
 export { IngredientInterface };
 export default IngredientModel;
+const ingredientSchema1 = new Schema<IngredientInterface>({
+	name: {
+		type: String,
+		required: true,
+	},
+	price: {
+		type: Number,
+		required: true,
+	},
+	ingredient_qty_adding: {
+		type: String,
+		required: true,
+	},
+
+	per_unit_price: {
+		type: String,
+		required: true,
+	},
+	size_per_unit: {
+		type: String,
+		required: true,
+	},
+	recipe_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'Recipe', // Reference to the Recipe model
+		required: true,
+	},
+});

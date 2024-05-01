@@ -103,25 +103,6 @@ const uploadPic = async (req: Request, res: Response) => {
 	}
 };
 
-const uploadPic1 = async (req: Request, res: Response) => {
-	try {
-		// Check if a file was uploaded
-		if (!req.file) {
-			return res
-				.status(400)
-				.json({ success: false, message: 'No image uploaded' });
-		}
-
-		// Get the file name
-		const imgName = path.basename(req.file.path);
-
-		res.status(200).json({ success: true, imagePath: imgName });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ success: false, message: 'Internal server error' });
-	}
-};
-
 const getAllMart = async (req: Request, res: Response) => {
 	try {
 		const customerId = req.query.customerId as string; // Get the customer ID from request query params
