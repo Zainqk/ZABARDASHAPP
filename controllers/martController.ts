@@ -28,28 +28,6 @@ const addMart = async (req: Request, res: Response) => {
 	}
 };
 
-// const addMart = async (req: Request, res: Response) => {
-// 	try {
-// 		const { name, address, vendor_id, img } = req.body;
-
-// 		// Create a new mart object
-// 		const newMart = new Mart({
-// 			name,
-// 			address,
-// 			img: img,
-// 			vendor_id,
-// 		});
-
-// 		// Save the new mart to the database
-// 		await newMart.save();
-
-// 		res.status(201).json({ success: true, message: 'Mart added successfully' });
-// 	} catch (error) {
-// 		console.error(error);
-// 		res.status(500).json({ success: false, message: 'Internal server error' });
-// 	}
-// };
-
 const updateMart = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params; // Extract mart ID from request parameters
