@@ -46,6 +46,18 @@ const getAllInventoryAgainstStore = async (req: Request, res: Response) => {
 	}
 };
 
+const getAllInventoryAgainstStore1 = async (req: Request, res: Response) => {
+	try {
+		// Retrieve all recipes from the database
+		const recipes = await InventoryModel.find();
+
+		res.status(200).json({ success: true, data: recipes });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const deleteInventory = async (req: Request, res: Response) => {
 	try {
 		const inventoryId = req.params.inventoryId; // Extract the inventory ID from the request parameters

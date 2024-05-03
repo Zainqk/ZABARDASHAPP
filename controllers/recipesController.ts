@@ -76,6 +76,41 @@ const addIngredient = async (req: Request, res: Response) => {
 	}
 };
 
+const addIngredient1 = async (req: Request, res: Response) => {
+	try {
+		const {
+			name,
+			price,
+			ingredient_qty_adding,
+
+			per_unit_price,
+			size_per_unit,
+			recipe_id,
+		} = req.body;
+
+		// Create a new ingredient object
+		const newIngredient = new Ingredient({
+			name,
+			price,
+			ingredient_qty_adding,
+
+			per_unit_price,
+			size_per_unit,
+			recipe_id,
+		});
+
+		// Save the new ingredient to the database
+		await newIngredient.save();
+
+		res
+			.status(201)
+			.json({ success: true, message: 'Ingredient added successfully' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const addInstruction = async (req: Request, res: Response) => {
 	try {
 		const { instructions, recipe_id } = req.body;
