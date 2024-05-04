@@ -14,7 +14,7 @@ const router = express.Router();
 router.post('/add', verifyToken, addInventory);
 router.get('/getAll', verifyToken, getAllInventory);
 router.delete('/delete/:id', verifyToken, deleteInventory);
-router.post('/updateqty/:id', verifyToken, updateStockQuantity);
-router.get('/getAgainstStore', verifyToken, getAllInventoryAgainstStore);
+router.post('/updateqty', verifyToken, updateStockQuantity);
+router.get('/getAgainstStore/:id', verifyToken, getAllInventoryAgainstStore);
 
 export default router;

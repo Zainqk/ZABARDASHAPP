@@ -36,22 +36,13 @@ const getAllInventory = async (req: Request, res: Response) => {
 
 const getAllInventoryAgainstStore = async (req: Request, res: Response) => {
 	try {
-		// Retrieve all recipes from the database
-		const recipes = await InventoryModel.find();
+		const { id } = req.params;
 
-		res.status(200).json({ success: true, data: recipes });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ success: false, message: 'Internal server error' });
-	}
-};
+		// Retrieve all inventory from the database
 
-const getAllInventoryAgainstStore1 = async (req: Request, res: Response) => {
-	try {
-		// Retrieve all recipes from the database
-		const recipes = await InventoryModel.find();
+		const inventory = await InventoryModel.find({ vendor_id: id });
 
-		res.status(200).json({ success: true, data: recipes });
+		res.status(200).json({ success: true, data: inventory });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
@@ -60,11 +51,17 @@ const getAllInventoryAgainstStore1 = async (req: Request, res: Response) => {
 
 const deleteInventory = async (req: Request, res: Response) => {
 	try {
-		const inventoryId = req.params.inventoryId; // Extract the inventory ID from the request parameters
+		const { id } = req.params;
 
-		// Find the inventory record by ID and delete it
-		await InventoryModel.findByIdAndDelete(inventoryId);
-
+		// Check if the inventory item exists
+		const inventoryItem = await InventoryModel.findById(id);
+		if (!inventoryItem) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Inventory item not found' });
+		}
+		const result = await InventoryModel.findByIdAndDelete(id);
+		console.log('The result is:', result);
 		res
 			.status(200)
 			.json({ success: true, message: 'Inventory deleted successfully' });
