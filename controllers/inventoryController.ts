@@ -34,7 +34,33 @@ const getAllInventory = async (req: Request, res: Response) => {
 	}
 };
 
+const getAllInventory1 = async (req: Request, res: Response) => {
+	try {
+		const inventories = await InventoryModel.find();
+
+		res.status(200).json({ success: true, data: inventories });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const getAllInventoryAgainstStore = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+
+		// Retrieve all inventory from the database
+
+		const inventory = await InventoryModel.find({ vendor_id: id });
+
+		res.status(200).json({ success: true, data: inventory });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
+const getAllInventoryAgainstStore1 = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 
