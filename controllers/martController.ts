@@ -298,30 +298,6 @@ const getCustomerFavoriteMart = async (req: Request, res: Response) => {
 	}
 };
 
-const addMartRating1 = async (req: Request, res: Response) => {
-	try {
-		const { customer_id, mart_id, no_of_rating, comment } = req.body;
-
-		// Create a new rating object
-		const newRating = new Rating({
-			customer_id,
-			mart_id,
-			no_of_rating,
-			comment,
-		});
-
-		// Save the new rating to the database
-		await newRating.save();
-
-		res
-			.status(201)
-			.json({ success: true, message: 'Rating added successfully' });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ success: false, message: 'Internal server error' });
-	}
-};
-
 const getAllMart1 = async (req: Request, res: Response) => {
 	try {
 		const customerId = req.query.customerId as string; // Get the customer ID from request query params
