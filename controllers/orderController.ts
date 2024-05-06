@@ -119,34 +119,6 @@ const updateOrderStatus = async (req: Request, res: Response) => {
 	}
 };
 
-const updateOrderStatuses = async (req: Request, res: Response) => {
-	try {
-		const { orderId, newStatus } = req.body;
-
-		// Find the order by orderId
-		const existingOrder = await Order.findById(orderId);
-
-		if (!existingOrder) {
-			return res
-				.status(404)
-				.json({ success: false, message: 'Order not found' });
-		}
-
-		// Update the order status
-		existingOrder.status = newStatus;
-
-		// Save the updated order status to the database
-		await existingOrder.save();
-
-		res
-			.status(200)
-			.json({ success: true, message: 'Order status updated successfully' });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ success: false, message: 'Internal server error' });
-	}
-};
-
 const deleteOrder = async (req: Request, res: Response) => {
 	try {
 		const orderId = req.params.id;
