@@ -258,7 +258,15 @@ const getSavingProductsById = async (req: Request, res: Response) => {
 		const savingProducts = await Saving.find({
 			is_saving: true,
 			product_id: id,
-		});
+		})
+			.populate({
+				path: 'product_id',
+				populate: {
+					path: 'category_id',
+					model: 'Category', // Assuming 'Category' is the name of your category model
+				},
+			})
+			.exec();
 
 		// Check if there are any saving products
 		if (!savingProducts || savingProducts.length === 0) {
