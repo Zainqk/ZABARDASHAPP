@@ -209,7 +209,18 @@ const getSavingProducts = async (req: Request, res: Response) => {
 			},
 			// Unwind the resulting array
 			{ $unwind: '$product' },
-			// Project to include only the product fields
+			// Lookup categories for each product
+			{
+				$lookup: {
+					from: 'categories', // Name of the category collection
+					localField: 'product.category_id',
+					foreignField: '_id',
+					as: 'category',
+				},
+			},
+			// Unwind the resulting array
+			{ $unwind: '$category' },
+			// Project to include only the product and category fields
 			{
 				$project: {
 					_id: '$product._id',
@@ -217,6 +228,7 @@ const getSavingProducts = async (req: Request, res: Response) => {
 					images: '$product.images',
 					status: '$product.status',
 					isFeatured: '$product.isFeatured',
+					category: '$category',
 				},
 			},
 		]);
@@ -284,6 +296,50 @@ const getSavingProductsById = async (req: Request, res: Response) => {
 	}
 };
 
+const getSavingProductsByCategoryId = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.query;
+
+		const savingProducts = await Saving.find({
+			is_saving: true,
+		})
+			.populate({
+				path: 'product_id',
+				populate: {
+					path: 'category_id',
+					model: 'Category', // Assuming 'Category' is the name of your category model
+				},
+			})
+			.exec();
+
+		// Check if there are any saving products
+		if (!savingProducts || savingProducts.length === 0) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'No saving products found' });
+		}
+		// Filter saving products by category ID
+		const filteredProducts = savingProducts.filter((savingProduct) => {
+			// Check if the product's category ID matches the provided category ID
+			// @ts-ignore
+			return savingProduct.product_id.category_id === id;
+		});
+
+		// Check if there are any saving products matching the category ID
+		if (!filteredProducts || filteredProducts.length === 0) {
+			return res.status(404).json({
+				success: false,
+				message: 'No saving products found for the provided category ID',
+			});
+		}
+
+		res.status(200).json({ success: true, saving_products: filteredProducts });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const getMartsByProductName = async (req: Request, res: Response) => {
 	try {
 		const { name } = req.query;
@@ -321,4 +377,5 @@ export {
 	getMartsByProductName,
 	editProduct,
 	deleteProduct,
+	getSavingProductsByCategoryId,
 };
