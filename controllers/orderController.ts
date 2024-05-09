@@ -80,6 +80,80 @@ const fetchOrders = async (req: Request, res: Response) => {
 	}
 };
 
+const overviewSale = async (req: Request, res: Response) => {
+	try {
+		const { mart_id } = req.query;
+		// @ts-ignore
+
+		const martId = new mongoose.Types.ObjectId(mart_id);
+		// Calculate the total amount for orders with the specific mart_id and status "completed"
+		const totalAmount = await Order.aggregate([
+			{ $match: { martId: martId, status: 'completed' } },
+			{ $group: { _id: null, amount: { $sum: '$totalAmount' } } },
+		]);
+		const pendingOrders = await Order.countDocuments({
+			martId: mart_id,
+			status: 'pending',
+		});
+		// Extract the total amount from the aggregation result
+		const total = totalAmount.length > 0 ? totalAmount[0].amount : 0;
+
+		res.status(200).json({
+			success: true,
+			totalSale: total,
+			totalPendingOrder: pendingOrders,
+			totalRevenue: 0,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
+const saleAnalytics = async (req: Request, res: Response) => {
+	try {
+		const { mart_id } = req.query;
+
+		// Parse mart_id into ObjectId
+		// @ts-ignore
+		const martId = new mongoose.Types.ObjectId(mart_id);
+
+		// Aggregate orders by month and year
+		const salesAnalytics = await Order.aggregate([
+			{
+				$match: {
+					martId: martId,
+					status: 'completed',
+				},
+			},
+			{
+				$group: {
+					_id: {
+						year: { $year: '$createdAt' },
+						month: { $month: '$createdAt' },
+					},
+					totalAmount: { $sum: '$totalAmount' },
+					orderCount: { $sum: 1 }, // Count the number of orders
+				},
+			},
+			{
+				$sort: {
+					'_id.year': 1,
+					'_id.month': 1,
+				},
+			},
+		]);
+
+		res.status(200).json({
+			success: true,
+			salesAnalytics: salesAnalytics,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const fetchOrders1 = async (req: Request, res: Response) => {
 	try {
 		const { status, user_id } = req.query;
@@ -180,4 +254,12 @@ const deleteOrder = async (req: Request, res: Response) => {
 	}
 };
 
-export { addOrder, fetchOrders, getAllOrders, updateOrderStatus, deleteOrder };
+export {
+	addOrder,
+	fetchOrders,
+	getAllOrders,
+	updateOrderStatus,
+	deleteOrder,
+	overviewSale,
+	saleAnalytics,
+};

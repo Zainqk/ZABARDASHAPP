@@ -6,6 +6,8 @@ import {
 	getAllOrders,
 	updateOrderStatus,
 	deleteOrder,
+	overviewSale,
+	saleAnalytics,
 } from '../controllers/orderController';
 const router = express.Router();
 
@@ -13,6 +15,8 @@ const router = express.Router();
 
 router.post('/addorder', verifyToken, addOrder);
 router.get('/fetchOrders', verifyToken, fetchOrders);
+router.get('/overviewSale', verifyToken, overviewSale);
+router.get('/saleAnalytics', verifyToken, saleAnalytics);
 router.get('/getAllOrders', verifyToken, getAllOrders);
 router.post('/updateStatus', verifyToken, updateOrderStatus);
 router.get('/getAllOrders', verifyToken, getAllOrders);
