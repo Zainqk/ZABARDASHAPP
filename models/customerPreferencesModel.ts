@@ -4,6 +4,7 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 interface CustomerPreferenceInterface extends Document {
 	customerId: mongoose.Types.ObjectId;
 	categoryPreferences: mongoose.Types.ObjectId;
+	martId: mongoose.Types.ObjectId;
 	price: number;
 }
 
@@ -20,6 +21,11 @@ const customerPreferenceSchema = new Schema<CustomerPreferenceInterface>(
 			ref: 'Category', // Reference to the Category model
 			required: true,
 		},
+		martId: {
+			type: Schema.Types.ObjectId,
+			ref: 'Mart', // Reference to the Category model
+			required: true,
+		},
 		price: {
 			type: Number,
 		},
@@ -31,4 +37,5 @@ const customerPreferenceSchema = new Schema<CustomerPreferenceInterface>(
 const CustomerPreferenceModel: Model<CustomerPreferenceInterface> =
 	mongoose.model('CustomerPreference', customerPreferenceSchema);
 
-export { CustomerPreferenceInterface, CustomerPreferenceModel };
+export { CustomerPreferenceInterface };
+export default CustomerPreferenceModel;
