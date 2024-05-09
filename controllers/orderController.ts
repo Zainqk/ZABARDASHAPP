@@ -80,7 +80,46 @@ const fetchOrders = async (req: Request, res: Response) => {
 	}
 };
 
+const fetchOrders1 = async (req: Request, res: Response) => {
+	try {
+		const { status, user_id } = req.query;
+
+		// Define the query object
+		const query: { customerId: mongoose.Types.ObjectId; status?: RegExp } = {
+			customerId: user_id as unknown as mongoose.Types.ObjectId, // Assuming user_id is a valid ObjectId
+		};
+
+		// If status is provided, add it to the query
+		if (status && typeof status === 'string') {
+			query.status = new RegExp(status, 'i');
+		}
+
+		// // If status is provided, add it to the query
+		// if (status && typeof status === 'string') {
+		// 	query.status = new RegExp(status, 'i');
+		// }
+
+		// Fetch orders based on the query
+		const orders = await Order.find(query);
+
+		res.status(200).json({ success: true, orders });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 const getAllOrders = async (req: Request, res: Response) => {
+	try {
+		const orders = await Order.find();
+
+		res.status(200).json({ success: true, orders });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+const getAllOrders1 = async (req: Request, res: Response) => {
 	try {
 		const orders = await Order.find();
 
