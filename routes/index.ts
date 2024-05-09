@@ -8,6 +8,7 @@ import orderRoutes from './orderRoutes';
 import recipesRoutes from './recipesRoutes';
 import categoryRoutes from './categoryRoute';
 import inventoryRoutes from './inventoryRoute';
+import customerPreferenceRoute from './customerPreferenceRoute';
 const router = express.Router();
 
 router.use('/user', userRoutes);
@@ -25,5 +26,6 @@ router.use('/recipe', recipesRoutes);
 router.use('/category', categoryRoutes);
 
 router.use('/inventory', inventoryRoutes);
+router.use('/customerPreference', customerPreferenceRoute);
 
 export default router;
