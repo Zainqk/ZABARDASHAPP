@@ -11,6 +11,7 @@ import {
 	deleteProduct,
 	editProduct,
 	getSavingProductsByCategoryId,
+	getProductsByCategory,
 } from '../controllers/productController';
 import multer from 'multer';
 const router = express.Router();
@@ -20,8 +21,9 @@ const router = express.Router();
 router.post('/addproduct', verifyToken, addProduct);
 router.get('/getproductsbymartid', verifyToken, getProductsByMartId);
 router.get('/getallproducts', verifyToken, getAllProducts);
+router.get('/getProductsByCategory', verifyToken, getProductsByCategory);
 router.get('/getSavingProducts', verifyToken, getSavingProducts);
-router.get('/getallproducts', verifyToken, getAllProducts);
+router.post('/addSavingProduct', verifyToken, addSavingProduct);
 router.put('/editproduct/:id', verifyToken, editProduct);
 router.delete('/deleteproduct/:id', verifyToken, deleteProduct);
 router.get('/getsavingproductsbyid', verifyToken, getSavingProductsById);

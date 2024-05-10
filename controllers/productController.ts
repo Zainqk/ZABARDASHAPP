@@ -170,6 +170,28 @@ const getAllProducts = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
+const getProductsByCategory = async (req: Request, res: Response) => {
+	try {
+		const { category_id } = req.query;
+
+		// Convert category_id to an array if it's a single value
+		const categoryIdArray = Array.isArray(category_id)
+			? category_id
+			: [category_id];
+
+		const products = await Product.find({
+			category_id: { $in: categoryIdArray },
+		}).populate('category_id', {
+			_id: 1,
+			name: 1,
+		});
+
+		res.status(200).json({ success: true, products });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
 const addSavingProduct = async (req: Request, res: Response) => {
 	try {
 		const { is_saving, saving_price, images, product_id } = req.body;
@@ -378,4 +400,5 @@ export {
 	editProduct,
 	deleteProduct,
 	getSavingProductsByCategoryId,
+	getProductsByCategory,
 };
