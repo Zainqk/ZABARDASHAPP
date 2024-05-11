@@ -18,12 +18,12 @@ const customerPreferenceSchema = new Schema<CustomerPreferenceInterface>(
 		},
 		categoryPreferences: {
 			type: Schema.Types.ObjectId,
-			ref: 'Category', // Reference to the Category model
+			ref: 'Category',
 			required: true,
 		},
 		martId: {
 			type: Schema.Types.ObjectId,
-			ref: 'Mart', // Reference to the Category model
+			ref: 'Mart',
 			required: true,
 		},
 		price: {
