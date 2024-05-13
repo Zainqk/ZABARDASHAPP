@@ -318,8 +318,8 @@ const getAllMart1 = async (req: Request, res: Response) => {
 			},
 			{
 				$lookup: {
-					from: 'customerfavourites', // Collection name for CustomerFavourite model
-					let: { martId: '$_id' }, // Local field from Mart collection
+					from: 'customerfavourites',
+					let: { martId: '$_id' },
 					pipeline: [
 						{
 							$match: {
