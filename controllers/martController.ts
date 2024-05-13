@@ -310,10 +310,10 @@ const getAllMart1 = async (req: Request, res: Response) => {
 		const allMartWithRatings = await Mart.aggregate([
 			{
 				$lookup: {
-					from: 'ratings', // Collection name for Rating model
-					localField: '_id', // Field from Mart collection
-					foreignField: 'mart_id', // Field from Rating collection
-					as: 'ratings', // Array field in Mart containing ratings
+					from: 'ratings',
+					localField: '_id',
+					foreignField: 'mart_id',
+					as: 'ratings',
 				},
 			},
 			{
