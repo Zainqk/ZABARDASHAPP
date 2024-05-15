@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import routes from './routes/index';
 import connectDb from './db';
 import path from 'path';
-
+import { setupChatServer } from './chat/chatServer';
 const app = express();
 const PORT = process.env.PORT || 6000;
 
@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'upload/images')));
 app.use('/', routes);
-
-app.listen(PORT, () => {
+const chatServer = setupChatServer(app);
+chatServer.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
 });
