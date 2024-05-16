@@ -3,8 +3,13 @@ import { Server } from 'socket.io';
 
 export const setupChatServer = (app: any) => {
 	const server = http.createServer(app);
-	const io = new Server(server);
-
+	const io = new Server(server, {
+		cors: {
+			origin: '*', // Allow any domain
+			methods: ['GET', 'POST'],
+			credentials: true,
+		},
+	});
 	io.on('connection', (socket) => {
 		console.log('A user connected');
 
