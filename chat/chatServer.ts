@@ -31,28 +31,21 @@ export const setupChatServer = (app: any) => {
 			console.log('The isCustomer value is:', isCustomer);
 			const senderSocket = userSockets.get(senderId);
 
-			const senderMessagePayload = {
-				message,
-				sender: true,
-			};
-			const receiptMessagePayload = {
-				message,
-				receiver: true,
-				senderId: senderId,
-			};
-			let messageDocument;
+			let messageDocument, dbMessages;
 			if (isCustomer) {
 				messageDocument = new MessageModel({
 					customer_id: senderId,
 					vendor_id: recipientUserIds[0],
 					message,
 				});
+				dbMessages = await MessageModel.find({ customer_id: senderId });
 			} else {
 				messageDocument = new MessageModel({
 					customer_id: recipientUserIds[0],
 					vendor_id: senderId,
 					message,
 				});
+				dbMessages = await MessageModel.find({ vendor_id: senderId });
 			}
 
 			try {
@@ -61,9 +54,18 @@ export const setupChatServer = (app: any) => {
 			} catch (error) {
 				console.error('Error saving message to database:', error);
 			}
+			const senderMessagePayload = {
+				messageDocument,
+				sender: true,
+			};
+			const receiptMessagePayload = {
+				messageDocument,
+				receiver: true,
+			};
 
 			// Send the message back to the sender with sender: true
 			if (senderSocket) {
+				// senderSocket.emit('message', senderMessagePayload);
 				senderSocket.emit('message', senderMessagePayload);
 			}
 			// Iterate over the array of recipient IDs and send the message to each
