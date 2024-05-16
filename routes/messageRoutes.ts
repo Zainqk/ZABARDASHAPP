@@ -1,20 +1,23 @@
 import express from 'express';
 import verifyToken from '../middleware/verifyToken';
 import {
-	addMart,
-	uploadPic,
-	getAllMart,
-	addMartRating,
-	addMartCustomerFavourite,
-	getCustomerFavoriteMart,
-	updateMart,
-} from '../controllers/martController';
+	getAllMessages,
+	deleteMessage,
+	updateMessage,
+	getMessagesByVendorId,
+	getMessagesByCustomerId,
+} from '../controllers/messageController';
 import multer from 'multer';
 const router = express.Router();
 
-router.get('/getMessagesByCustomerId/:id', verifyToken, getAllMart);
-router.get('/getMessagesByVendorId/:id', verifyToken, getAllMart);
-router.delete('/deleteMessage/:id', verifyToken, getAllMart);
-router.put('/update/:id', verifyToken, getAllMart);
+router.get(
+	'/getMessagesByCustomerId/:id',
+	verifyToken,
+	getMessagesByCustomerId
+);
+router.get('/getMessagesByVendorId/:id', verifyToken, getMessagesByVendorId);
+router.delete('/deleteMessage/:id', verifyToken, deleteMessage);
+router.put('/update', verifyToken, updateMessage);
+router.get('/getAllMessages', verifyToken, getAllMessages);
 
 export default router;
