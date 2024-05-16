@@ -4,8 +4,8 @@ import { UserInterface } from './userModel';
 interface MessageInterface extends Document {
 	customer_id: mongoose.Types.ObjectId;
 	vendor_id: mongoose.Types.ObjectId;
-	admin_id: mongoose.Types.ObjectId;
-	content: string;
+	// admin_id: mongoose.Types.ObjectId;
+	message: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -22,12 +22,12 @@ const messageSchema = new Schema<MessageInterface>(
 			ref: 'User',
 			required: true,
 		},
-		admin_id: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: true,
-		},
-		content: {
+		// admin_id: {
+		// 	type: Schema.Types.ObjectId,
+		// 	ref: 'User',
+		// 	required: true,
+		// },
+		message: {
 			type: String,
 			required: true,
 		},

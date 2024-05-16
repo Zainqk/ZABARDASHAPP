@@ -1,5 +1,6 @@
 import http from 'http';
 import { Server } from 'socket.io';
+import MessageModel from '../models/messageModel'; // Import your MessageModel
 
 // Map to store user IDs and their corresponding socket instances
 const userSockets = new Map();
@@ -24,9 +25,10 @@ export const setupChatServer = (app: any) => {
 		});
 
 		// Event listener for message
-		socket.on('message', (data) => {
+		socket.on('message', async (data) => {
 			console.log('Received message from client:', data);
-			const { message, senderId, recipientUserIds } = data;
+			const { message, senderId, recipientUserIds, isCustomer } = data;
+			console.log('The isCustomer value is:', isCustomer);
 			const senderSocket = userSockets.get(senderId);
 
 			const senderMessagePayload = {
@@ -38,8 +40,32 @@ export const setupChatServer = (app: any) => {
 				receiver: true,
 				senderId: senderId,
 			};
+			let messageDocument;
+			if (isCustomer) {
+				messageDocument = new MessageModel({
+					customer_id: senderId,
+					vendor_id: recipientUserIds[0],
+					message,
+				});
+			} else {
+				messageDocument = new MessageModel({
+					customer_id: recipientUserIds[0],
+					vendor_id: senderId,
+					message,
+				});
+			}
 
-			senderSocket.emit('message', senderMessagePayload);
+			try {
+				await messageDocument.save();
+				console.log('Message saved to database');
+			} catch (error) {
+				console.error('Error saving message to database:', error);
+			}
+
+			// Send the message back to the sender with sender: true
+			if (senderSocket) {
+				senderSocket.emit('message', senderMessagePayload);
+			}
 			// Iterate over the array of recipient IDs and send the message to each
 			recipientUserIds.forEach((recipientUserId: any) => {
 				const recipientSocket = userSockets.get(recipientUserId);
