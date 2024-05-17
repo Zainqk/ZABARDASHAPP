@@ -51,12 +51,15 @@ const updateMessage = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
-const getMessagesByCustomerId = async (req: Request, res: Response) => {
+const getMessagesForCustomer = async (req: Request, res: Response) => {
 	try {
-		const { id } = req.params;
+		const { customer_id, vendor_id } = req.query;
 
 		// Find the newMessage record for the specified product ID
-		const newMessages = await MessageModel.find({ customer_id: id });
+		const newMessages = await MessageModel.find({
+			customer_id: customer_id,
+			vendor_id: vendor_id,
+		});
 
 		if (!newMessages) {
 			return res
@@ -71,12 +74,15 @@ const getMessagesByCustomerId = async (req: Request, res: Response) => {
 	}
 };
 
-const getMessagesByVendorId = async (req: Request, res: Response) => {
+const getMessagesForVendor = async (req: Request, res: Response) => {
 	try {
-		const { id } = req.params;
+		const { customer_id, vendor_id } = req.query;
 
 		// Find the newMessage record for the specified product ID
-		const newMessages = await MessageModel.find({ vendor_id: id });
+		const newMessages = await MessageModel.find({
+			vendor_id: vendor_id,
+			customer_id: customer_id,
+		});
 
 		if (!newMessages) {
 			return res
@@ -94,6 +100,6 @@ export {
 	getAllMessages,
 	deleteMessage,
 	updateMessage,
-	getMessagesByVendorId,
-	getMessagesByCustomerId,
+	getMessagesForVendor,
+	getMessagesForCustomer,
 };
