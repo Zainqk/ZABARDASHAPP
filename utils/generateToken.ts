@@ -9,7 +9,7 @@ const generateToken = ({ email }: userInput) => {
 			email: email,
 		},
 		`${process.env.SECRETKEY}`,
-		{ expiresIn: '12h' } // Set the token expiration time as needed
+		{ expiresIn: '12h' } // Set the token expirations time as needed
 	);
 
 	return token;
