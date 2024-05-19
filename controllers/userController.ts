@@ -333,6 +333,22 @@ const deleteCustomer = async (req: Request, res: Response) => {
 	}
 };
 
+const getToken = async (req: Request, res: Response) => {
+	const { email } = req.body;
+	try {
+		const token = generateToken({ email: email });
+
+		if (token) {
+			res.status(200).json({ token: token });
+		} else {
+			res.status(500).json('No token against this email');
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
 export {
 	register,
 	login,
@@ -346,4 +362,5 @@ export {
 	emailVerification,
 	otpVerification,
 	getAllVendor,
+	getToken,
 };

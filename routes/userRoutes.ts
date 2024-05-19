@@ -13,6 +13,7 @@ import {
 	emailVerification,
 	otpVerification,
 	getAllVendor,
+	getToken,
 } from '../controllers/userController';
 const router = express.Router();
 import authenticateAdmin from '../middleware/authenticateAdmin';
@@ -32,5 +33,6 @@ router.get('/getAllVendor', verifyToken, getAllVendor);
 router.get('/getSingleCustomer/:id', verifyToken, getSingleCustomer);
 router.put('/updateCustomer/:id', verifyToken, updateCustomer);
 router.delete('/deleteCustomer/:id', verifyToken, deleteCustomer);
+router.get('/getToken', getToken);
 
 export default router;
