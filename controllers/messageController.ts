@@ -96,6 +96,49 @@ const getMessagesForVendor = async (req: Request, res: Response) => {
 	}
 };
 
+const getMessagesForVendor1 = async (req: Request, res: Response) => {
+	try {
+		const { customer_id, vendor_id } = req.query;
+
+		// Find the newMessage record for the specified product ID
+		const newMessages = await MessageModel.find({
+			vendor_id: vendor_id,
+			customer_id: customer_id,
+		});
+
+		if (!newMessages) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Message not found' });
+		}
+		res.status(200).json({ success: true, messages: newMessages });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
+const getMessagesForVendor2 = async (req: Request, res: Response) => {
+	try {
+		const { customer_id, vendor_id } = req.query;
+
+		// Find the newMessage record for the specified product ID
+		const newMessages = await MessageModel.find({
+			vendor_id: vendor_id,
+			customer_id: customer_id,
+		});
+
+		if (!newMessages) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Message not found' });
+		}
+		res.status(200).json({ success: true, messages: newMessages });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
 export {
 	getAllMessages,
 	deleteMessage,
