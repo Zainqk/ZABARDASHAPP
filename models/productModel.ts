@@ -7,6 +7,7 @@ interface ProductInterface {
 	mart_id: mongoose.Types.ObjectId;
 	description: string;
 	price: number;
+	discount_price: number;
 	stockQuantity: number;
 	images: string;
 	status: string;
@@ -46,6 +47,10 @@ const productSchema = new Schema<ProductInterface>(
 		price: {
 			type: Number,
 			required: true,
+		},
+		discount_price: {
+			type: Number,
+			default: 0,
 		},
 		stockQuantity: {
 			type: Number,
