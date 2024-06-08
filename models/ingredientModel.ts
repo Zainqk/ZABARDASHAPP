@@ -7,6 +7,7 @@ interface IngredientInterface {
 	instructions: string[];
 	per_unit_price: string;
 	size_per_unit: string;
+	img: string;
 	recipe_id: mongoose.Types.ObjectId;
 	mart_id: mongoose.Types.ObjectId;
 }
@@ -23,6 +24,10 @@ const ingredientSchema = new Schema<IngredientInterface>({
 	ingredient_qty_adding: {
 		type: String,
 		required: true,
+	},
+	img: {
+		type: String,
+		// required: true,
 	},
 
 	per_unit_price: {
