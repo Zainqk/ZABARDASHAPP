@@ -114,14 +114,20 @@ const deleteProduct = async (req: Request, res: Response) => {
 const getProductsByMartId = async (req: Request, res: Response) => {
 	try {
 		const { mart_id, category_id, isFeatured, searchByName } = req.query;
+		//This is needed when you want products against mart_id only not whole products
+		// let query: {
+		// 	mart_id: string;
+		// 	category_id?: any;
+		// 	isFeatured?: string;
+		// 	name?: RegExp;
+		// } = {
+		// 	mart_id: mart_id as string,
+		// };
 		let query: {
-			mart_id: string;
 			category_id?: any;
 			isFeatured?: string;
 			name?: RegExp;
-		} = {
-			mart_id: mart_id as string,
-		};
+		} = {};
 
 		if (category_id) {
 			if (Array.isArray(category_id)) {
