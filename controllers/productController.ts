@@ -4,7 +4,10 @@ import Category from '../models/categoryModel';
 import Mart from '../models/martModel';
 import Saving from '../models/savingModel';
 import QuantityModel from '../models/quantityModel';
-
+import fs from 'fs';
+import path from 'path';
+import csv from 'csv-parser';
+const filePath = path.join(__dirname, '..', 'test.products.csv');
 const addProduct = async (req: Request, res: Response) => {
 	try {
 		const {
@@ -115,19 +118,19 @@ const getProductsByMartId = async (req: Request, res: Response) => {
 	try {
 		const { mart_id, category_id, isFeatured, searchByName } = req.query;
 		//This is needed when you want products against mart_id only not whole products
-		// let query: {
-		// 	mart_id: string;
-		// 	category_id?: any;
-		// 	isFeatured?: string;
-		// 	name?: RegExp;
-		// } = {
-		// 	mart_id: mart_id as string,
-		// };
 		let query: {
+			mart_id: string;
 			category_id?: any;
 			isFeatured?: string;
 			name?: RegExp;
-		} = {};
+		} = {
+			mart_id: mart_id as string,
+		};
+		// let query: {
+		// 	category_id?: any;
+		// 	isFeatured?: string;
+		// 	name?: RegExp;
+		// } = {};
 
 		if (category_id) {
 			if (Array.isArray(category_id)) {
@@ -395,6 +398,49 @@ const getMartsByProductName = async (req: Request, res: Response) => {
 	}
 };
 
+const addRawProducts = async (req: Request, res: Response) => {
+	const results: any[] = [];
+
+	fs.createReadStream(filePath) // Adjust the path to where your CSV file is located
+		.pipe(csv())
+		.on('data', (data) => results.push(data))
+		.on('end', async () => {
+			try {
+				// Iterate through each record in the CSV file
+				for (const productData of results) {
+					const newProduct = new Product({
+						name: productData.name,
+						category_id: productData.category_id,
+						description: productData.description,
+						price: productData.price,
+						stockQuantity: productData.stockQuantity,
+						images: productData.images, // Make sure to handle image URLs or paths correctly
+						status: productData.status,
+						subtitle: productData.subtitle,
+						isFeatured: productData.isFeatured, // Adjust as necessary if this field is not in CSV
+						variation: productData.variation, // Handle this depending on your schema and CSV structure
+						mart_id: productData.mart_id,
+						vendor_id: productData.vendor_id,
+						threshold: productData.threshold, // Adjust as necessary if this field is not in CSV
+						discount_price: productData.discount_price,
+					});
+
+					await newProduct.save();
+				}
+
+				res.status(201).json({
+					success: true,
+					message: 'Raw products added successfully',
+				});
+			} catch (error) {
+				console.error(error);
+				res
+					.status(500)
+					.json({ success: false, message: 'Internal server error' });
+			}
+		});
+};
+
 export {
 	addProduct,
 	getProductsByMartId,
@@ -407,4 +453,5 @@ export {
 	deleteProduct,
 	getSavingProductsByCategoryId,
 	getProductsByCategory,
+	addRawProducts,
 };
