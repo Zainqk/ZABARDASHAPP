@@ -105,6 +105,7 @@ const getRecipesDetailByRecipesId = async (req: Request, res: Response) => {
 		// Query the database to find the recipe details based on recipe_id
 		const ingredient = await Ingredient.find({ recipe_id });
 		const instruction = await Instruction.find({ recipe_id });
+		const recipe = await Recipe.findById(recipe_id);
 
 		if (!ingredient) {
 			return res
@@ -118,6 +119,7 @@ const getRecipesDetailByRecipesId = async (req: Request, res: Response) => {
 
 		res.status(200).json({
 			success: true,
+			mart_id: recipe?.mart_id,
 			ingredient: ingredient,
 			instruction: instruction,
 		});

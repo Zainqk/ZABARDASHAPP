@@ -27,6 +27,22 @@ const addMart = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
+const viewMartRating = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+
+		const rating = await Rating.find({ mart_id: id });
+
+		res.status(201).json({
+			success: true,
+			Rating: rating,
+			message: 'Mart added successfully',
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
 
 const updateMart = async (req: Request, res: Response) => {
 	try {
@@ -391,4 +407,5 @@ export {
 	addMartCustomerFavourite,
 	getCustomerFavoriteMart,
 	updateMart,
+	viewMartRating,
 };

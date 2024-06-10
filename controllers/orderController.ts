@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Order from '../models/orderModel';
 import mongoose from 'mongoose';
+import DeliveryCharges from '../models/chargesModel';
 const addOrder = async (req: Request, res: Response) => {
 	try {
 		const {
@@ -254,6 +255,20 @@ const deleteOrder = async (req: Request, res: Response) => {
 	}
 };
 
+const getDeliveryCharges = async (req: Request, res: Response) => {
+	try {
+		const deliveryCharges = await DeliveryCharges.find();
+		res.status(200).json({
+			success: true,
+			delivery_fee: deliveryCharges,
+			message: 'Delivery fee fetch successfully',
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 export {
 	addOrder,
 	fetchOrders,
@@ -262,4 +277,5 @@ export {
 	deleteOrder,
 	overviewSale,
 	saleAnalytics,
+	getDeliveryCharges,
 };

@@ -8,6 +8,7 @@ import {
 	addMartCustomerFavourite,
 	getCustomerFavoriteMart,
 	updateMart,
+	viewMartRating,
 } from '../controllers/martController';
 import multer from 'multer';
 const router = express.Router();
@@ -38,6 +39,7 @@ router.get('/getallmart', verifyToken, getAllMart);
 router.get('/update/:id', verifyToken, updateMart);
 router.get('/getcustomerfavouritemart', verifyToken, getCustomerFavoriteMart);
 router.post('/addmartrating', verifyToken, addMartRating);
+router.get('/viewmartrating/:id', verifyToken, viewMartRating);
 router.post('/addmartcustomerfavourite', verifyToken, addMartCustomerFavourite);
 
 export default router;
