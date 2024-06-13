@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "userId": "ade000ae-5240-473e-b5ef-31d1a3d4a53b",
+    "name": "Muhammad Ismail",
+    "email": "nidijow283@jadsys.com",
+    "password": "pakistan12345",
+    "userType": "vendor",
+    "resetTokenOrVerificationCode": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pZGlqb3cyODNAamFkc3lzLmNvbSIsImlhdCI6MTcxODA3MjY2MywiZXhwIjoxNzE4MDc2MjYzfQ.rIlyYyVq5YjBTlq_-xigipr5j5D1xejUpHbwF8vB2hU"
+  }
+]

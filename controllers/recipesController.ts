@@ -106,7 +106,7 @@ const getRecipesDetailByRecipesId = async (req: Request, res: Response) => {
 		const ingredient = await Ingredient.find({ recipe_id });
 		const instruction = await Instruction.find({ recipe_id });
 		const recipe = await Recipe.findById(recipe_id);
-
+		const similarRecipes = await Recipe.find().limit(4);
 		if (!ingredient) {
 			return res
 				.status(404)
@@ -122,6 +122,7 @@ const getRecipesDetailByRecipesId = async (req: Request, res: Response) => {
 			mart_id: recipe?.mart_id,
 			ingredient: ingredient,
 			instruction: instruction,
+			similarRecipes: similarRecipes,
 		});
 	} catch (error) {
 		console.error(error);

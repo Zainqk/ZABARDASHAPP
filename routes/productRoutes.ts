@@ -13,6 +13,7 @@ import {
 	getSavingProductsByCategoryId,
 	getProductsByCategory,
 	addRawProducts,
+	getPeopleAlsoBoughtThese,
 } from '../controllers/productController';
 import multer from 'multer';
 const router = express.Router();
@@ -35,4 +36,9 @@ router.get(
 	getSavingProductsByCategoryId
 );
 router.get('/getMartsByProductName', verifyToken, getMartsByProductName);
+router.get(
+	'/getPeopleAlsoBoughtThese/:id',
+	verifyToken,
+	getPeopleAlsoBoughtThese
+);
 export default router;

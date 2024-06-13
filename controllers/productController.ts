@@ -7,6 +7,7 @@ import QuantityModel from '../models/quantityModel';
 import fs from 'fs';
 import path from 'path';
 import csv from 'csv-parser';
+import ProductModal from '../models/productModel';
 const filePath = path.join(__dirname, '..', 'test.products.csv');
 const addProduct = async (req: Request, res: Response) => {
 	try {
@@ -310,7 +311,11 @@ const getSavingProductsById = async (req: Request, res: Response) => {
 				},
 			})
 			.exec();
-
+		const product = await ProductModal.findById(id);
+		console.log('The saving product is:', product?.category_id);
+		const similarProducts = await ProductModal.find({
+			category_id: product?.category_id,
+		}).limit(4);
 		// Check if there are any saving products
 		if (!savingProducts || savingProducts.length === 0) {
 			return res
@@ -318,9 +323,12 @@ const getSavingProductsById = async (req: Request, res: Response) => {
 				.json({ success: false, message: 'No saving products found' });
 		}
 
-		res
-			.status(200)
-			.json({ success: true, saving_products: savingProducts, marts: marts });
+		res.status(200).json({
+			success: true,
+			saving_products: savingProducts,
+			marts: marts,
+			similarProducts: similarProducts,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
@@ -441,6 +449,31 @@ const addRawProducts = async (req: Request, res: Response) => {
 		});
 };
 
+const getPeopleAlsoBoughtThese = async (req: Request, res: Response) => {
+	try {
+		const category_id = req.params.id;
+
+		const peopleBoughtThese = await Product.find({
+			category_id: category_id,
+		}).limit(4);
+
+		if (!peopleBoughtThese) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Product not found' });
+		}
+
+		res.status(200).json({
+			success: true,
+			peopleBoughtThese,
+			message: 'Product fetched successfully',
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+
 export {
 	addProduct,
 	getProductsByMartId,
@@ -454,4 +487,5 @@ export {
 	getSavingProductsByCategoryId,
 	getProductsByCategory,
 	addRawProducts,
+	getPeopleAlsoBoughtThese,
 };

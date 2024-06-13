@@ -6,6 +6,7 @@ interface MartInterface {
 	img: string;
 	isFeatured: boolean;
 	no_of_views: number;
+	delivery_charges: number;
 	vendor_id: mongoose.Types.ObjectId; // Foreign key from customer_id
 }
 
@@ -30,6 +31,10 @@ const martSchema = new Schema<MartInterface>(
 		no_of_views: {
 			type: Number,
 			default: 0,
+		},
+		delivery_charges: {
+			type: Number,
+			default: 8,
 		},
 		vendor_id: {
 			type: Schema.Types.ObjectId,

@@ -19,7 +19,7 @@ router.get('/fetchOrders', verifyToken, fetchOrders);
 router.get('/overviewSale', verifyToken, overviewSale);
 router.get('/saleAnalytics', verifyToken, saleAnalytics);
 router.get('/getAllOrders', verifyToken, getAllOrders);
-router.get('/getDeliveryFee', verifyToken, getDeliveryCharges);
+router.get('/getDeliveryFee/:Id', verifyToken, getDeliveryCharges);
 router.post('/updateStatus', verifyToken, updateOrderStatus);
 router.get('/getAllOrders', verifyToken, getAllOrders);
 router.delete('/deleteOrder/:id', verifyToken, deleteOrder);
