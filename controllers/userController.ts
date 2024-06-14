@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import User, { UserInterface } from '../models/userModel';
+import AddressModel from '../models/addressModel';
 import {
 	createCustomer,
 	loginCustomer,
@@ -349,6 +350,34 @@ const getToken = async (req: Request, res: Response) => {
 	}
 };
 
+const addAddress = async (req: Request, res: Response) => {
+	const { customer_id, title, address } = req.body;
+	try {
+		const newAddress = new AddressModel({ customer_id, title, address });
+		await newAddress.save();
+		res
+			.status(201)
+			.json({ message: 'Address added successfully', address: newAddress });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+const getAddressesByCustomerId = async (req: Request, res: Response) => {
+	const { customer_id } = req.params;
+	try {
+		const addresses = await AddressModel.find({ customer_id });
+		if (addresses.length > 0) {
+			res.status(200).json({ addresses });
+		} else {
+			res.status(404).json({ message: 'No addresses found for this customer' });
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
 export {
 	register,
 	login,
@@ -363,4 +392,6 @@ export {
 	otpVerification,
 	getAllVendor,
 	getToken,
+	addAddress,
+	getAddressesByCustomerId,
 };
