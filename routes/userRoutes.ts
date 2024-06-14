@@ -16,12 +16,14 @@ import {
 	getToken,
 	addAddress,
 	getAddressesByCustomerId,
+	socialLogin,
 } from '../controllers/userController';
 const router = express.Router();
 import authenticateAdmin from '../middleware/authenticateAdmin';
 
 router.post('/login', login);
 router.post('/register', register);
+router.post('/socialLogin', socialLogin);
 router.post('/forgotPassword', forgotPassword);
 router.post('/tokenVerification/:token', tokenVerification);
 router.post('/otpverification', otpVerification);

@@ -19,6 +19,7 @@ import generateResetToken from '../utils/generateResetToken';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import generateToken from '../utils/generateToken';
+import UserModal from '../models/userModel';
 
 // Register Admin api
 const register = async (req: Request, res: Response) => {
@@ -378,6 +379,58 @@ const getAddressesByCustomerId = async (req: Request, res: Response) => {
 	}
 };
 
+const socialLogin = async (req: Request, res: Response) => {
+	const { name, email } = req.body;
+
+	try {
+		// Check if the user already exists
+		const existingUser = await UserModal.findOne({ email });
+		if (existingUser) {
+			return res.status(400).json({
+				success: false,
+				message: 'User already exists',
+			});
+		}
+
+		// Create a new user instance
+		const newUser = new UserModal({
+			password: 'ijklmnopqrstuvwxyzABCDEFGHIJK',
+			name,
+			email,
+		});
+
+		// Save the user to the database
+		await newUser.save();
+
+		// Generate a JWT token
+		const token = jwt.sign(
+			{ email: newUser.email },
+			`${process.env.SECRETKEY}`,
+			{ expiresIn: '1h' } // Token expires in 1 hour
+		);
+
+		// Return the user data and token
+		const userResponse = {
+			name: newUser.name,
+			email: newUser.email,
+			userType: newUser.userType,
+			token: token,
+		};
+		// Return the user data and token
+		res.status(201).json({
+			success: true,
+			message: 'User registered successfully',
+			data: userResponse,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 export {
 	register,
 	login,
@@ -394,4 +447,5 @@ export {
 	getToken,
 	addAddress,
 	getAddressesByCustomerId,
+	socialLogin,
 };
