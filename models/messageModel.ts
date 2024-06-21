@@ -2,8 +2,7 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 import { UserInterface } from './userModel';
 
 interface MessageInterface extends Document {
-	customer_id: mongoose.Types.ObjectId;
-	vendor_id: mongoose.Types.ObjectId;
+	conversation_id: mongoose.Types.ObjectId;
 	// admin_id: mongoose.Types.ObjectId;
 	message: string;
 	createdAt: Date;
@@ -12,14 +11,9 @@ interface MessageInterface extends Document {
 // message model body
 const messageSchema = new Schema<MessageInterface>(
 	{
-		customer_id: {
+		conversation_id: {
 			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: true,
-		},
-		vendor_id: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
+			ref: 'Conversation',
 			required: true,
 		},
 		// admin_id: {

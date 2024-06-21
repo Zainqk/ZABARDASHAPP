@@ -27,25 +27,27 @@ export const setupChatServer = (app: any) => {
 		// Event listener for message
 		socket.on('message', async (data) => {
 			console.log('Received message from client:', data);
-			const { message, senderId, recipientUserIds, isCustomer } = data;
+			const {
+				message,
+				senderId,
+				recipientUserIds,
+				conversation_id,
+				isCustomer,
+			} = data;
 			// console.log('The isCustomer value is:', isCustomer);
 			const senderSocket = userSockets.get(senderId);
 
-			let messageDocument, dbMessages;
+			let messageDocument;
 			if (isCustomer) {
 				messageDocument = new MessageModel({
-					customer_id: senderId,
-					vendor_id: recipientUserIds[0],
+					conversation_id,
 					message,
 				});
-				dbMessages = await MessageModel.find({ customer_id: senderId });
 			} else {
 				messageDocument = new MessageModel({
-					customer_id: recipientUserIds[0],
-					vendor_id: senderId,
+					conversation_id,
 					message,
 				});
-				dbMessages = await MessageModel.find({ vendor_id: senderId });
 			}
 
 			try {

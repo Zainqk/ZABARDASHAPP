@@ -1,12 +1,52 @@
 import { Request, Response } from 'express';
 import InventoryModel from '../models/inventoryModel';
 import MessageModel from '../models/messageModel';
+import ConversationModel from '../models/conversationModel';
 
 const getAllMessages = async (req: Request, res: Response) => {
 	try {
 		const Messages = await MessageModel.find();
 
 		res.status(200).json({ success: true, Messages: Messages });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+const createConversation = async (req: Request, res: Response) => {
+	try {
+		const { customer_id, vendor_id, order_id, order_supportiveId } = req.body;
+
+		// Find the newMessage record for the specified product ID
+		const conversation = new ConversationModel({
+			customer_id,
+			vendor_id,
+			order_id,
+			order_supportiveId,
+		});
+
+		// Save the new conversation to the database
+		const newConversation = await conversation.save();
+
+		res.status(200).json({
+			success: true,
+			conversation: newConversation,
+			message: 'Conversation created successfully',
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
+const getConversation = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const conversation = await ConversationModel.find({ customer_id: id });
+
+		res.status(200).json({
+			success: true,
+			conversation: conversation,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
@@ -53,12 +93,11 @@ const updateMessage = async (req: Request, res: Response) => {
 };
 const getMessagesForCustomer = async (req: Request, res: Response) => {
 	try {
-		const { customer_id, vendor_id } = req.query;
+		const { conversation_id } = req.query;
 
 		// Find the newMessage record for the specified product ID
 		const newMessages = await MessageModel.find({
-			customer_id: customer_id,
-			vendor_id: vendor_id,
+			conversation_id,
 		});
 
 		if (!newMessages) {
@@ -76,12 +115,11 @@ const getMessagesForCustomer = async (req: Request, res: Response) => {
 
 const getMessagesForVendor = async (req: Request, res: Response) => {
 	try {
-		const { customer_id, vendor_id } = req.query;
+		const { conversation_id } = req.query;
 
 		// Find the newMessage record for the specified product ID
 		const newMessages = await MessageModel.find({
-			vendor_id: vendor_id,
-			customer_id: customer_id,
+			conversation_id,
 		});
 
 		if (!newMessages) {
@@ -102,4 +140,6 @@ export {
 	updateMessage,
 	getMessagesForVendor,
 	getMessagesForCustomer,
+	createConversation,
+	getConversation,
 };
