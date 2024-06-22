@@ -76,10 +76,6 @@ const orderSchema = new Schema<OrderInterface>(
 					required: true,
 				},
 				quantity: { type: Number, required: true, default: 1 },
-				variant_id: {
-					type: String,
-					required: true,
-				},
 			},
 		],
 		taxAmount: {

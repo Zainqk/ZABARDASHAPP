@@ -40,10 +40,15 @@ const addOrder = async (req: Request, res: Response) => {
 		});
 
 		// Save the new order to the database
-		await newOrder.save();
+		const order = await newOrder.save();
+
+		const Response = {
+			_id: order._id,
+			orderNumber: order.orderNumber,
+		};
 
 		res.status(201).json({
-			orderNumber: orderNumber,
+			order: Response,
 			success: true,
 			message: 'Order added successfully',
 		});
