@@ -43,7 +43,8 @@ interface registerAdminInterface {
 }
 interface verifyOtpInterface {
 	otp: string;
-	userId: string;
+	// userId: string;
+	email: string;
 }
 interface getCustomerByIdInterface {
 	id: string;
@@ -120,38 +121,48 @@ const createCustomer = async ({
 
 		console.log('Email sent: ' + info.response);
 
-		// Generate a unique identifier for the user
-		const userId = uuidv4();
+		// // Generate a unique identifier for the user
+		// const userId = uuidv4();
 
-		// Read existing data from config.json or initialize an empty array
-		let userDataArray = [];
-		if (fs.existsSync(configFilePath)) {
-			const configData = fs.readFileSync(configFilePath);
-			// Check if configData is not empty
-			console.log('The user data is: ', configData);
-			if (configData) {
-				userDataArray = JSON.parse(configData);
-			}
-		}
+		// // Read existing data from config.json or initialize an empty array
+		// let userDataArray = [];
+		// if (fs.existsSync(configFilePath)) {
+		// 	const configData = fs.readFileSync(configFilePath);
+		// 	// Check if configData is not empty
+		// 	console.log('The user data is: ', configData);
+		// 	if (configData) {
+		// 		userDataArray = JSON.parse(configData);
+		// 	}
+		// }
 
-		// Add user information to the array
-		userDataArray.push({
-			userId,
-			name,
-			phoneNumber,
-			email,
-			password,
-			userType,
-			resetTokenOrVerificationCode,
+		// // Add user information to the array
+		// userDataArray.push({
+		// 	userId,
+		// 	name,
+		// 	phoneNumber,
+		// 	email,
+		// 	password,
+		// 	userType,
+		// 	resetTokenOrVerificationCode,
+		// });
+
+		// // Write the updated user information back to config.json
+		// fs.writeFileSync(configFilePath, JSON.stringify(userDataArray, null, 2));
+
+		const registerCustomer = await UserModal.create({
+			name: name,
+			phoneNumber: phoneNumber,
+			email: email,
+			password: password,
+			userType: userType,
+			verificationCode: resetTokenOrVerificationCode,
 		});
-
-		// Write the updated user information back to config.json
-		fs.writeFileSync(configFilePath, JSON.stringify(userDataArray, null, 2));
 
 		return {
 			success: true,
-			userId,
+			// userId,
 			message: 'Check your Gmail for email verification',
+			// customer: registerCustomer,
 		};
 	} catch (error) {
 		console.error(error);
@@ -176,24 +187,36 @@ const emailVerif = ({
 	});
 };
 
-const verifyOtp = async ({ otp, userId }: verifyOtpInterface) => {
+const verifyOtp = async ({ otp, email }: verifyOtpInterface) => {
 	try {
-		// Read user data from config.json
-		const configData = fs.readFileSync(configFilePath);
-		const userDataArray = JSON.parse(configData);
+		// // Read user data from config.json
+		// const configData = fs.readFileSync(configFilePath);
+		// const userDataArray = JSON.parse(configData);
 
-		// Find user information by userId
-		const userData = userDataArray.find((user: any) => user.userId === userId);
+		// // Find user information by userId
+		// const userData = userDataArray.find((user: any) => user.userId === userId);
 
-		if (!userData) {
-			return { success: false, message: 'Invalid data in config.json' };
-		}
+		// if (!userData) {
+		// 	return { success: false, message: 'Invalid data in config.json' };
+		// }
 		// console.log('The admin registration data in the config.json:', userData);
+		const userData: any = await UserModal.find({ email: email });
 
-		if (userData.resetTokenOrVerificationCode === otp) {
+		if (userData[0]?.verificationCode === otp) {
+			const result = await UserModal.updateOne(
+				{ email: email },
+				{ $set: { isVerify: true } }
+			);
+			// Destructure the fields to exclude them from the user object
+			const sanitizedUser = {
+				_id: userData[0]._id,
+				name: userData[0].name,
+				email: userData[0].email,
+			};
 			return {
 				success: true,
 				message: 'Otp verified successfully',
+				user: sanitizedUser,
 			};
 		} else {
 			return {
@@ -264,6 +287,10 @@ const loginCustomer = async ({ email, password }: loginAdminInterface) => {
 		if (!customer) {
 			// Admin not found
 			return { success: false, message: 'Customer not found' };
+		}
+		if (!customer.isVerify) {
+			// Admin not found
+			return { success: false, message: 'Please verify your account' };
 		}
 
 		const isPasswordValid = await customer.comparePassword(password);

@@ -11,6 +11,8 @@ interface UserInterface {
 	address: string;
 	comparePassword(candidatePassword: string): Promise<boolean>;
 	generateToken(): string;
+	verificationCode: number;
+	isVerify: boolean;
 }
 
 const userSchema = new Schema<UserInterface>({
@@ -39,6 +41,13 @@ const userSchema = new Schema<UserInterface>({
 	},
 	address: {
 		type: String,
+	},
+	verificationCode: {
+		type: Number,
+	},
+	isVerify: {
+		type: Boolean,
+		default: false,
 	},
 });
 
