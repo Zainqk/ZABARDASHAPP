@@ -4,6 +4,7 @@ import {
 	addPreference,
 	getPreferences,
 	getPreferencesByMartId,
+	getPreferencesByCustomerId,
 } from '../controllers/customerPreferenceController';
 const router = express.Router();
 
@@ -12,5 +13,10 @@ const router = express.Router();
 router.post('/add', verifyToken, addPreference);
 router.get('/getAll', verifyToken, getPreferences);
 router.get('/getByMartId', verifyToken, getPreferencesByMartId);
+router.get(
+	'/getPrefrenceByCustomerId',
+	verifyToken,
+	getPreferencesByCustomerId
+);
 
 export default router;

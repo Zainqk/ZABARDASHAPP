@@ -22,6 +22,8 @@ router.use('/product', productRoutes);
 
 router.use('/order', orderRoutes);
 
+router.use('/customerPreference', customerPreferenceRoute);
+
 router.use('/recipe', recipesRoutes);
 
 router.use('/category', categoryRoutes);

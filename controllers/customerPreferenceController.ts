@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import InventoryModel from '../models/inventoryModel';
 import CustomerPreferenceModel from '../models/customerPreferencesModel';
 import path from 'path';
+import mongoose from 'mongoose';
 //addPreference
 const addPreference = async (req: Request, res: Response) => {
 	try {
@@ -69,6 +70,21 @@ const getPreferencesByMartId = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: 'Internal server error' });
 	}
 };
+const getPreferencesByCustomerId = async (req: Request, res: Response) => {
+	try {
+		const { customerId } = req.query;
+
+		// Fetch preferences based on the provided martId
+		const preferences = await CustomerPreferenceModel.find({
+			customerId: customerId,
+		});
+
+		res.status(200).json({ success: true, preferences });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: 'Internal server error' });
+	}
+};
 const getPreferencesByMartId1 = async (req: Request, res: Response) => {
 	try {
 		const { martId } = req.query;
@@ -83,4 +99,9 @@ const getPreferencesByMartId1 = async (req: Request, res: Response) => {
 	}
 };
 
-export { addPreference, getPreferences, getPreferencesByMartId };
+export {
+	addPreference,
+	getPreferences,
+	getPreferencesByMartId,
+	getPreferencesByCustomerId,
+};
